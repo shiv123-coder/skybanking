@@ -1,0 +1,118 @@
+## 🏦 Banking System – Deployment Steps using Apache Tomcat
+
+### **Step 1: Configure Environment Variables**
+
+The application requires database credentials to be set securely via environment variables.
+Before starting Tomcat, you must configure these variables. The easiest way is to create a configuration file.
+
+1. Go to your Tomcat `bin` directory:
+   ```
+   C:\apache-tomcat-10.1.43\bin
+   ```
+2. Create a new text file named `setenv.bat`.
+3. Open `setenv.bat` in Notepad and add the following lines:
+   ```bat
+   set DB_URL=jdbc:postgresql://localhost:5432/skybank
+   set DB_USER=postgres
+   set DB_PASSWORD=your_postgres_password_here
+   ```
+   *(Ensure you replace `your_mysql_password_here` with your actual MySQL password)*
+
+---
+
+### **Step 2: Clean Previous Build Files**
+
+1. Go to the project target folder:
+   ```
+   D:\~Projects\3rd_4th_Year_Projects\Full Stack\Banking system\target
+   ```
+2. Delete **everything inside the `target` folder** to remove previous build files.
+
+3. Then go to:
+   ```
+   C:\apache-tomcat-10.1.43\webapps
+   ```
+4. Delete **everything inside the `webapps` folder** to remove old deployments.
+
+---
+
+### **Step 3: Build the Project using Maven**
+
+1. Open **Command Prompt** and navigate to your project directory:
+   ```
+   cd D:\~Projects\3rd_4th_Year_Projects\Full Stack\Banking system
+   ```
+2. Run either of the following commands to build the project:
+
+   * **Option 1:**
+     ```
+     mvn clean package
+     ```
+   * **Option 2 (recommended if tests cause delay/errors):**
+     ```
+     mvn -f "pom.xml" clean package -DskipTests
+     ```
+
+---
+
+### **Step 4: Deploy the WAR File to Tomcat**
+
+1. After Maven finishes building, go to:
+   ```
+   D:\~Projects\3rd_4th_Year_Projects\Full Stack\Banking system\target
+   ```
+2. Find the generated file:
+   ```
+   BankingWebApp.war
+   ```
+3. Copy this `.war` file and paste it into:
+   ```
+   C:\apache-tomcat-10.1.43\webapps
+   ```
+
+---
+
+### **Step 5: Start Apache Tomcat**
+
+1. Go to the Tomcat `bin` directory:
+   ```
+   C:\apache-tomcat-10.1.43\bin
+   ```
+2. Double-click or run:
+   ```
+   startup.bat
+   ```
+   ✅ This will start the Tomcat server and automatically load the variables from `setenv.bat`.
+
+---
+
+### **Step 6: Access the Application**
+
+#### 🔹 **For Admin Login:**
+Open your browser and go to:
+```
+http://localhost:9090/BankingWebApp/admin/
+```
+**Username:** `Shiv`
+**Password:** `Shivmali@123`
+
+#### 🔹 **For User Login:**
+Open your browser and go to:
+```
+http://localhost:9090/BankingWebApp/
+```
+
+---
+
+### **Step 7: Stop the Project**
+
+When you want to stop the Tomcat server:
+
+1. Go to:
+   ```
+   C:\apache-tomcat-10.1.43\bin
+   ```
+2. Double-click or run:
+   ```
+   shutdown.bat
+   ```

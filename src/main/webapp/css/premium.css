@@ -1,0 +1,265 @@
+/* Premium Neo-Banking CSS */
+
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --secondary-color: #0ea5e9;
+    --success-color: #10b981;
+    --danger-color: #ef4444;
+    --warning-color: #f59e0b;
+    --bg-color: #f1f5f9;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --surface-color: #ffffff;
+    --border-color: #e2e8f0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+    border-radius: 20px;
+}
+
+/* App Layout Grid */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    height: calc(100vh - 2rem);
+    position: sticky;
+    top: 1rem;
+    z-index: 1000;
+}
+
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: calc(100% - 280px);
+}
+
+/* Auth Layout */
+.auth-layout {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f0fdfa 0%, #e0e7ff 100%);
+    padding: 1.5rem;
+    position: relative;
+    overflow: hidden;
+}
+.auth-layout::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(79,70,229,0.1) 0%, rgba(255,255,255,0) 70%);
+    top: -200px;
+    left: -200px;
+    border-radius: 50%;
+}
+.auth-layout::after {
+    content: '';
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(16,185,129,0.08) 0%, rgba(255,255,255,0) 70%);
+    bottom: -300px;
+    right: -200px;
+    border-radius: 50%;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 420px;
+    padding: 3rem 2.5rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Typography */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bg-gradient-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+}
+
+/* Inputs */
+.form-control, .form-select {
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+    background-color: #f8fafc;
+}
+.form-control:focus, .form-select:focus {
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.15);
+    border-color: var(--primary-color);
+    background-color: #fff;
+}
+.form-label {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+/* Buttons */
+.btn {
+    border-radius: 12px;
+    padding: 0.75rem 1.75rem;
+    font-weight: 600;
+    letter-spacing: 0.2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(79, 70, 229, 0.25);
+}
+.btn-primary:hover, .btn-primary:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
+    background: linear-gradient(135deg, var(--primary-hover), var(--primary-hover));
+}
+
+/* Dashboard Metrics */
+.balance-card {
+    background: linear-gradient(135deg, #1e293b, #0f172a);
+    color: white;
+    padding: 2.5rem;
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+.balance-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(79,70,229,0.4) 0%, rgba(255,255,255,0) 100%);
+    filter: blur(40px);
+    z-index: 0;
+}
+.balance-card * {
+    position: relative;
+    z-index: 1;
+}
+
+/* Sidebar Links */
+.sidebar .nav-link {
+    border-radius: 12px;
+    margin-bottom: 0.35rem;
+    padding: 0.85rem 1rem;
+    font-weight: 500;
+    color: var(--text-secondary) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+}
+.sidebar .nav-link i {
+    font-size: 1.25rem;
+    color: #94a3b8;
+    transition: color 0.3s ease;
+}
+.sidebar .nav-link:hover {
+    background-color: #f1f5f9;
+    color: var(--text-primary) !important;
+    transform: translateX(6px);
+}
+.sidebar .nav-link:hover i {
+    color: var(--primary-color);
+}
+.sidebar .nav-link.active {
+    background-color: var(--primary-color) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+}
+.sidebar .nav-link.active i {
+    color: white !important;
+}
+.profile-link:hover {
+    background-color: rgba(255,255,255,0.8);
+    border-radius: 8px;
+    transform: translateY(-1px);
+}
+
+/* Standard Panels */
+.action-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0,0,0,0.03);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+}
+.action-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Status Badges */
+.badge-success { background-color: #d1fae5; color: #065f46; }
+.badge-danger { background-color: #fee2e2; color: #991b1b; }
+.badge-warning { background-color: #fef3c7; color: #92400e; }
+.badge-info { background-color: #dbeafe; color: #1e40af; }
+
+/* Utilities */
+.hover-scale { transition: transform 0.3s ease; }
+.hover-scale:hover { transform: scale(1.02); }
+
+/* Animation Classes */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up {
+    animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Action links inside tables/lists */
+.table-action {
+    color: var(--primary-color);
+    opacity: 0.8;
+    transition: opacity 0.2s, transform 0.2s;
+}
+.table-action:hover {
+    opacity: 1;
+    color: var(--primary-hover);
+    transform: scale(1.1);
+}
