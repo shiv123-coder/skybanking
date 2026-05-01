@@ -20,7 +20,7 @@ SkyBanking is a comprehensive, MNC-ready banking solution built with a modern Ja
 ### 📊 System Architecture & Flow
 The following diagram illustrates the core system flow in a professional, hand-drawn "tldraw" style:
 
-![System Flowchart](assets/images/flowchart.png)
+![System Flowchart](assets/images/banking_system_flowchart_tldraw_1777647691733.png)
 
 
 ---
