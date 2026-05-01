@@ -8,8 +8,8 @@ RUN mvn dependency:go-offline -B
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Stage 2: Run
-FROM tomcat:10.1-jdk21-eclipse-temurin
+# Stage 2: Run (FIXED)
+FROM tomcat:10.1-jdk17-temurin
 
 RUN rm -rf /usr/local/tomcat/webapps/*
 
