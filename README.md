@@ -1,6 +1,6 @@
 <div align="center">
 
-![SkyBanking Hero](assets/images/hero.png)
+![SkyBanking Hero](assets/images/banking_system_hero_3d_1777647711696.png)
 
 # 🌌 SkyBanking: Enterprise-Grade Financial Ecosystem
 **Secure | Scalable | Seamless**
