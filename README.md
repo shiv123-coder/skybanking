@@ -1,6 +1,6 @@
 <div align="center">
 
-![SkyBanking Hero](C:\Users\shivs\.gemini\antigravity\brain\88732a4a-9605-477f-848c-78e98412f4f0\banking_system_hero_3d_1777647711696.png)
+![SkyBanking Hero](assets/images/hero.png)
 
 # 🌌 SkyBanking: Enterprise-Grade Financial Ecosystem
 **Secure | Scalable | Seamless**
@@ -20,7 +20,8 @@ SkyBanking is a comprehensive, MNC-ready banking solution built with a modern Ja
 ### 📊 System Architecture & Flow
 The following diagram illustrates the core system flow in a professional, hand-drawn "tldraw" style:
 
-![System Flowchart](C:\Users\shivs\.gemini\antigravity\brain\88732a4a-9605-477f-848c-78e98412f4f0\banking_system_flowchart_tldraw_1777647691733.png)
+![System Flowchart](assets/images/flowchart.png)
+
 
 ---
 
