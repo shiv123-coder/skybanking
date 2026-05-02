@@ -20,6 +20,16 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/premium.css">
     
     <script>
+        // Immediate Theme Detection (to prevent flashing)
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const themeToApply = savedTheme || systemTheme;
+            document.documentElement.setAttribute('data-theme', themeToApply);
+        })();
+    </script>
+    
+    <script>
         // Auto-dismiss alerts after 5 seconds
         window.addEventListener('DOMContentLoaded', () => {
             const alerts = document.querySelectorAll('.alert-dismissible');

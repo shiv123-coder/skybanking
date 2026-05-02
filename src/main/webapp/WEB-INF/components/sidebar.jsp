@@ -3,12 +3,19 @@
     String requestUri = request.getRequestURI();
 %>
 <nav class="sidebar glass-panel d-flex flex-column p-4 m-3 shadow-lg">
-    <a href="dashboard.jsp" class="d-flex align-items-center mb-4 me-md-auto text-decoration-none transition-transform hover-scale">
-        <div class="bg-primary text-white rounded p-2 me-3 shadow-sm">
-            <i class="bi bi-bank2 fs-4"></i>
-        </div>
-        <span class="fs-4 fw-bold gradient-text">SkyBank</span>
-    </a>
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <a href="dashboard.jsp" class="d-flex align-items-center text-decoration-none transition-transform hover-scale">
+            <div class="bg-primary text-white rounded p-2 me-3 shadow-sm">
+                <i class="bi bi-bank2 fs-4"></i>
+            </div>
+            <span class="fs-4 fw-bold gradient-text">SkyBank</span>
+        </a>
+        
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle" class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Toggle Theme">
+            <i class="bi bi-moon-stars fs-5 text-primary" id="theme-icon"></i>
+        </button>
+    </div>
     <hr class="text-muted opacity-25">
     <ul class="nav nav-pills flex-column mb-auto gap-1">
         <li class="nav-item">
@@ -76,3 +83,40 @@
     </div>
 </nav>
 <% } %>
+
+<script>
+    // Theme Toggle Logic
+    window.addEventListener('DOMContentLoaded', () => {
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
+                themeIcon.classList.replace('text-primary', 'text-warning');
+            } else {
+                themeIcon.classList.replace('bi-sun', 'bi-moon-stars');
+                themeIcon.classList.replace('text-warning', 'text-primary');
+            }
+        }
+
+        // Initialize icon state
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        updateIcon(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+            
+            // Optional: Add a brief animation class
+            themeIcon.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                themeIcon.style.transform = 'rotate(0deg)';
+            }, 500);
+        });
+    });
+</script>
