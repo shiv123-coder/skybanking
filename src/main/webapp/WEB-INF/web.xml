@@ -59,4 +59,14 @@
         <role-name>admin</role-name>
     </security-role>
 
+    <servlet>
+        <servlet-name>ping</servlet-name>
+        <servlet-class>com.skybanking.web.PingServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ping</servlet-name>
+        <url-pattern>/ping</url-pattern>
+    </servlet-mapping>
+
 </web-app>
