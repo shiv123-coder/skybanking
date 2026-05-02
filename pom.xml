@@ -1,8 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>com.skybanking</groupId>
     <artifactId>BankingWebApp</artifactId>
     <version>1.0.0</version>
@@ -13,8 +14,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!-- ✅ DEPENDENCIES -->
     <dependencies>
-        <!-- Jakarta EE 9.1 API (use 9.1.0 for better compatibility and availability) -->
+
+        <!-- Jakarta EE -->
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-api</artifactId>
@@ -22,13 +25,14 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- dotenv -->
         <dependency>
             <groupId>io.github.cdimascio</groupId>
             <artifactId>dotenv-java</artifactId>
             <version>3.0.0</version>
         </dependency>
 
-        <!-- Jakarta Mail API -->
+        <!-- Mail -->
         <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>jakarta.mail</artifactId>
@@ -47,20 +51,14 @@
             <version>2.0.0</version>
         </dependency>
 
-        <!-- org.json (use latest available version) -->
+        <!-- JSON -->
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
             <version>20231013</version>
         </dependency>
 
-        <dependency>
-            <groupId>jakarta.mail</groupId>
-            <artifactId>jakarta.mail-api</artifactId>
-            <version>2.1.2</version>
-        </dependency>
-
-        <!-- PDF Generation Libraries -->
+        <!-- PDF -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext7-core</artifactId>
@@ -80,7 +78,6 @@
             <version>1.3.32</version>
         </dependency>
 
-        <!-- Apache PDFBox (Alternative PDF library) -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
@@ -100,7 +97,7 @@
             <version>1.5.3</version>
         </dependency>
 
-        <!-- Apache Commons -->
+        <!-- Commons -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -127,7 +124,7 @@
             <version>1.70</version>
         </dependency>
 
-        <!-- Excel Export -->
+        <!-- Excel -->
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
@@ -140,21 +137,21 @@
             <version>5.2.4</version>
         </dependency>
 
-        <!-- BCrypt Password Hashing -->
+        <!-- Password -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
             <version>0.4</version>
         </dependency>
 
-        <!-- Stripe Payment SDK -->
+        <!-- Stripe -->
         <dependency>
             <groupId>com.stripe</groupId>
             <artifactId>stripe-java</artifactId>
             <version>25.12.0</version>
         </dependency>
 
-        <!-- QR Code Generation (ZXing) -->
+        <!-- QR -->
         <dependency>
             <groupId>com.google.zxing</groupId>
             <artifactId>core</artifactId>
@@ -166,21 +163,20 @@
             <version>3.5.3</version>
         </dependency>
 
-        <!-- PostgreSQL Driver -->
+        <!-- DB -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.7.3</version>
         </dependency>
 
-        <!-- HikariCP Connection Pool -->
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>5.1.0</version>
         </dependency>
 
-        <!-- GSON for JSON handling -->
+        <!-- Gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
@@ -189,10 +185,13 @@
 
     </dependencies>
 
+    <!-- ✅ SINGLE BUILD BLOCK (IMPORTANT) -->
     <build>
-        <finalName>BankingWebApp</finalName>
+        <finalName>ROOT</finalName>
+
         <plugins>
-            <!-- Java Compiler -->
+
+            <!-- Compiler -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -202,7 +201,7 @@
                 </configuration>
             </plugin>
 
-            <!-- WAR Plugin -->
+            <!-- WAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
@@ -211,6 +210,8 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
+
 </project>
