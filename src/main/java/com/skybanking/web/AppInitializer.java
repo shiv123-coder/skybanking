@@ -15,21 +15,28 @@ public class AppInitializer implements ServletContextListener {
 		System.out.println("🚀 Starting SkyBanking App...");
 
 		try {
+			// FORCE SERVLET CLASS LOADING
+			Class.forName("com.skybanking.web.LoginServlet");
+			Class.forName("com.skybanking.web.DashboardServlet");
+			Class.forName("com.skybanking.web.SignupServlet");
+
+			System.out.println("✅ Servlet classes forced to load");
+
+		} catch (Exception e) {
+			System.err.println("⚠️ Servlet preload failed");
+			e.printStackTrace();
+		}
+
+		try {
 			if (DBConnection.isAvailable()) {
-				try {
-					DBMigrations.ensureSchema();
-					System.out.println("✅ DB Ready");
-				} catch (Throwable t) {
-					System.err.println("⚠️ DB migration failed, continuing...");
-					t.printStackTrace();
-				}
+				DBMigrations.ensureSchema();
+				System.out.println("✅ DB Ready");
 			} else {
 				System.out.println("⚠️ No DB connection. Running in LIMITED mode.");
 			}
 
 		} catch (Throwable t) {
-			// 🚨 NEVER allow listener to crash
-			System.err.println("⚠️ App startup error ignored:");
+			System.err.println("⚠️ DB startup error ignored:");
 			t.printStackTrace();
 		}
 	}
