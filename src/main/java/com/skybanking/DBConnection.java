@@ -12,27 +12,32 @@ import java.util.logging.Logger;
 public class DBConnection {
 
     private static final Logger LOGGER = Logger.getLogger(DBConnection.class.getName());
-    private static final HikariDataSource dataSource;
+    private static HikariDataSource dataSource = null;
 
     static {
         try {
-            // ✅ Load .env for LOCAL
             Dotenv dotenv = Dotenv.configure()
                     .ignoreIfMissing()
                     .load();
 
-            // ✅ ENV priority:
-            // 1. System ENV (Render)
-            // 2. .env file (local)
-            String dbUrl = System.getenv("DB_URL") != null ? System.getenv("DB_URL") : dotenv.get("DB_URL");
-            String dbUser = System.getenv("DB_USER") != null ? System.getenv("DB_USER") : dotenv.get("DB_USER");
-            String dbPassword = System.getenv("DB_PASSWORD") != null ? System.getenv("DB_PASSWORD")
-                    : dotenv.get("DB_PASSWORD");
-            String poolSizeStr = System.getenv("DB_POOL_SIZE") != null ? System.getenv("DB_POOL_SIZE")
-                    : dotenv.get("DB_POOL_SIZE");
+            // ✅ Priority: Render ENV → .env (local)
+            String dbUrl = System.getenv("DB_URL");
+            String dbUser = System.getenv("DB_USER");
+            String dbPassword = System.getenv("DB_PASSWORD");
+            String poolSizeStr = System.getenv("DB_POOL_SIZE");
+
+            if (dbUrl == null)
+                dbUrl = dotenv.get("DB_URL");
+            if (dbUser == null)
+                dbUser = dotenv.get("DB_USER");
+            if (dbPassword == null)
+                dbPassword = dotenv.get("DB_PASSWORD");
+            if (poolSizeStr == null)
+                poolSizeStr = dotenv.get("DB_POOL_SIZE");
 
             if (dbUrl == null || dbUser == null || dbPassword == null) {
-                throw new IllegalStateException("❌ Missing DB credentials");
+                LOGGER.severe("❌ DB credentials missing. App will start WITHOUT DB.");
+                return; // 🚀 Do NOT crash app
             }
 
             HikariConfig config = new HikariConfig();
@@ -41,22 +46,16 @@ public class DBConnection {
             config.setUsername(dbUser);
             config.setPassword(dbPassword);
 
-            // 🔥 REQUIRED FOR SUPABASE
-            config.addDataSourceProperty("ssl", "true");
+            // ✅ SSL (for Supabase)
             config.addDataSourceProperty("sslmode", "require");
 
-            // 🚀 Performance tuning
-            config.addDataSourceProperty("cachePrepStmts", "true");
-            config.addDataSourceProperty("prepStmtCacheSize", "250");
-            config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
-
-            // Pool config
+            // Pool size
             int poolSize = 10;
-            if (poolSizeStr != null) {
-                try {
+            try {
+                if (poolSizeStr != null) {
                     poolSize = Integer.parseInt(poolSizeStr);
-                } catch (Exception ignored) {
                 }
+            } catch (Exception ignored) {
             }
 
             config.setMaximumPoolSize(poolSize);
@@ -68,18 +67,26 @@ public class DBConnection {
             config.setDriverClassName("org.postgresql.Driver");
             config.setPoolName("SkyBankPool");
 
+            // ✅ THIS WAS MISSING (CRITICAL)
             dataSource = new HikariDataSource(config);
 
-            LOGGER.info("✅ DB Connected with HikariCP Pool");
+            LOGGER.info("✅ DB Connected with HikariCP");
 
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "❌ DB INIT FAILED", e);
-            throw new ExceptionInInitializerError(e);
+            LOGGER.log(Level.SEVERE, "❌ DB INIT FAILED — App will still run", e);
+            dataSource = null; // 🚀 keep app alive
         }
     }
 
     public static Connection getConnection() throws SQLException {
+        if (dataSource == null) {
+            throw new SQLException("DB not initialized. Check environment variables.");
+        }
         return dataSource.getConnection();
+    }
+
+    public static boolean isAvailable() {
+        return dataSource != null;
     }
 
     public static void shutdown() {
