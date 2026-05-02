@@ -14,14 +14,29 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <!-- ✅ DEPENDENCIES -->
+    <!-- ================= DEPENDENCIES ================= -->
     <dependencies>
 
-        <!-- Jakarta EE -->
+        <!-- PDF GENERATION (FIX FOR com.lowagie.text.* ERROR) -->
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.39</version>
+        </dependency>
+
+        <!-- ✅ Jakarta EE 10 (FIXED for Tomcat 10.1) -->
         <dependency>
             <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>9.1.0</version>
+            <artifactId>jakarta.jakartaee-web-api</artifactId>
+            <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- Servlet API (explicit fix for Tomcat 10) -->
+        <dependency>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+            <version>6.0.0</version>
             <scope>provided</scope>
         </dependency>
 
@@ -58,26 +73,7 @@
             <version>20231013</version>
         </dependency>
 
-        <!-- PDF -->
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>itext7-core</artifactId>
-            <version>7.2.5</version>
-            <type>pom</type>
-        </dependency>
-
-        <dependency>
-            <groupId>com.itextpdf</groupId>
-            <artifactId>html2pdf</artifactId>
-            <version>4.0.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.github.librepdf</groupId>
-            <artifactId>openpdf</artifactId>
-            <version>1.3.32</version>
-        </dependency>
-
+        <!-- PDF (KEEP ONLY PDFBOX - AVOID CONFLICTS) -->
         <dependency>
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
@@ -137,7 +133,7 @@
             <version>5.2.4</version>
         </dependency>
 
-        <!-- Password -->
+        <!-- Password hashing -->
         <dependency>
             <groupId>org.mindrot</groupId>
             <artifactId>jbcrypt</artifactId>
@@ -185,7 +181,7 @@
 
     </dependencies>
 
-    <!-- ✅ SINGLE BUILD BLOCK (IMPORTANT) -->
+    <!-- ================= BUILD ================= -->
     <build>
         <finalName>ROOT</finalName>
 
@@ -201,13 +197,14 @@
                 </configuration>
             </plugin>
 
-            <!-- WAR -->
+            <!-- WAR Plugin (FIXED) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>3.4.0</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <warSourceDirectory>src/main/webapp</warSourceDirectory>
                 </configuration>
             </plugin>
 

@@ -16,45 +16,33 @@ public class DBConnection {
 
     static {
         try {
-            Dotenv dotenv = Dotenv.configure()
-                    .ignoreIfMissing()
-                    .load();
+            Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
 
-            // ✅ Priority: Render ENV → .env (local)
-            String dbUrl = System.getenv("DB_URL");
-            String dbUser = System.getenv("DB_USER");
-            String dbPassword = System.getenv("DB_PASSWORD");
-            String poolSizeStr = System.getenv("DB_POOL_SIZE");
-
-            if (dbUrl == null)
-                dbUrl = dotenv.get("DB_URL");
-            if (dbUser == null)
-                dbUser = dotenv.get("DB_USER");
-            if (dbPassword == null)
-                dbPassword = dotenv.get("DB_PASSWORD");
-            if (poolSizeStr == null)
-                poolSizeStr = dotenv.get("DB_POOL_SIZE");
+            String dbUrl = getEnv("DB_URL", dotenv);
+            String dbUser = getEnv("DB_USER", dotenv);
+            String dbPassword = getEnv("DB_PASSWORD", dotenv);
+            String poolSizeStr = getEnv("DB_POOL_SIZE", dotenv);
 
             if (dbUrl == null || dbUser == null || dbPassword == null) {
-                LOGGER.severe("❌ DB credentials missing. App will start WITHOUT DB.");
-                return; // 🚀 Do NOT crash app
+                LOGGER.severe("❌ DB credentials missing. Running WITHOUT database.");
+                dataSource = null;
             }
 
-            HikariConfig config = new HikariConfig();
+            LOGGER.info("🔍 DB URL = " + dbUrl);
+            LOGGER.info("🔍 DB USER = " + dbUser);
 
+            HikariConfig config = new HikariConfig();
             config.setJdbcUrl(dbUrl);
             config.setUsername(dbUser);
             config.setPassword(dbPassword);
 
-            // ✅ SSL (for Supabase)
+            // Supabase / cloud DB SSL
             config.addDataSourceProperty("sslmode", "require");
 
-            // Pool size
             int poolSize = 10;
             try {
-                if (poolSizeStr != null) {
+                if (poolSizeStr != null)
                     poolSize = Integer.parseInt(poolSizeStr);
-                }
             } catch (Exception ignored) {
             }
 
@@ -65,22 +53,28 @@ public class DBConnection {
             config.setMaxLifetime(1800000);
 
             config.setDriverClassName("org.postgresql.Driver");
-            config.setPoolName("SkyBankPool");
 
-            // ✅ THIS WAS MISSING (CRITICAL)
+            // ✅ Prevent startup crash if DB is unreachable
+            config.setInitializationFailTimeout(-1);
+
             dataSource = new HikariDataSource(config);
 
-            LOGGER.info("✅ DB Connected with HikariCP");
+            LOGGER.info("✅ HikariCP initialized (DB may connect lazily)");
 
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "❌ DB INIT FAILED — App will still run", e);
-            dataSource = null; // 🚀 keep app alive
+        } catch (Throwable t) { // ⚠️ catch EVERYTHING
+            LOGGER.log(Level.SEVERE, "❌ DB INIT FAILED — continuing without DB", t);
+            dataSource = null;
         }
+    }
+
+    private static String getEnv(String key, Dotenv dotenv) {
+        String val = System.getenv(key);
+        return val != null ? val : dotenv.get(key);
     }
 
     public static Connection getConnection() throws SQLException {
         if (dataSource == null) {
-            throw new SQLException("DB not initialized. Check environment variables.");
+            throw new SQLException("DB not available");
         }
         return dataSource.getConnection();
     }
@@ -90,9 +84,12 @@ public class DBConnection {
     }
 
     public static void shutdown() {
-        if (dataSource != null && !dataSource.isClosed()) {
-            dataSource.close();
-            LOGGER.info("Pool shutdown");
+        try {
+            if (dataSource != null && !dataSource.isClosed()) {
+                dataSource.close();
+                LOGGER.info("✅ Pool shutdown");
+            }
+        } catch (Exception ignored) {
         }
     }
 }

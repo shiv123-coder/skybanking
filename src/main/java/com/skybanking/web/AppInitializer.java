@@ -11,24 +11,34 @@ public class AppInitializer implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent sce) {
-		try {
-			System.out.println("🚀 Starting SkyBanking App...");
 
+		System.out.println("🚀 Starting SkyBanking App...");
+
+		try {
 			if (DBConnection.isAvailable()) {
-				DBMigrations.ensureSchema();
-				System.out.println("✅ DB Ready");
+				try {
+					DBMigrations.ensureSchema();
+					System.out.println("✅ DB Ready");
+				} catch (Throwable t) {
+					System.err.println("⚠️ DB migration failed, continuing...");
+					t.printStackTrace();
+				}
 			} else {
-				System.out.println("⚠️ DB not available. App running in LIMITED mode.");
+				System.out.println("⚠️ No DB connection. Running in LIMITED mode.");
 			}
 
-		} catch (Exception e) {
-			System.err.println("⚠️ Startup warning (ignored): " + e.getMessage());
-			e.printStackTrace();
+		} catch (Throwable t) {
+			// 🚨 NEVER allow listener to crash
+			System.err.println("⚠️ App startup error ignored:");
+			t.printStackTrace();
 		}
 	}
 
 	@Override
 	public void contextDestroyed(ServletContextEvent sce) {
-		DBConnection.shutdown();
+		try {
+			DBConnection.shutdown();
+		} catch (Exception ignored) {
+		}
 	}
 }
