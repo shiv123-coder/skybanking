@@ -1,13 +1,40 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page import="io.github.cdimascio.dotenv.Dotenv" %>
 <%
+    // Load environment variables
+    Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
     String serverName = request.getServerName();
     boolean isLocal = "localhost".equalsIgnoreCase(serverName) || "127.0.0.1".equals(serverName);
-    String appEnv = System.getenv("APP_ENV");
-    boolean isProd = "production".equalsIgnoreCase(appEnv);
     
-    // Requirement: ONLY run in production. NOT on localhost.
-    boolean showLoader = !isLocal && isProd;
+    // Global Config Toggles
+    String appEnv = dotenv.get("APP_ENV", "development");
+    String enablePreloaderTag = dotenv.get("ENABLE_PRELOADER", "true");
+    
+    boolean isProd = "production".equalsIgnoreCase(appEnv);
+    boolean isFeatureEnabled = "true".equalsIgnoreCase(enablePreloaderTag);
+    
+    // Final visibility logic: MUST be enabled in config AND (be production OR be forced for testing)
+    boolean showLoader = isFeatureEnabled && (!isLocal && isProd);
 %>
+
+<!-- Global Loading State (Global Toggle Tag) -->
+<script>
+    (function() {
+        window.SkyBankingConfig = window.SkyBankingConfig || {};
+        window.SkyBankingConfig.preloaderEnabled = <%= isFeatureEnabled %>;
+        window.SkyBankingConfig.isProduction = <%= isProd %>;
+        
+        // Honor local toggle
+        const isLocallyDisabled = localStorage.getItem('disablePreloader') === 'true';
+        if (isLocallyDisabled) {
+            document.documentElement.classList.add('no-preloader');
+        }
+        
+        // Global state for entire project
+        window.AppState = window.AppState || {};
+        window.AppState.isLoading = <%= showLoader %> && !isLocallyDisabled;
+    })();
+</script>
 
 <% if (showLoader) { %>
 <div id="sky-preloader" class="preloader-overlay">
@@ -57,6 +84,11 @@
         opacity: 0;
         transform: scale(1.05);
         pointer-events: none;
+    }
+
+    /* Support for global toggle button */
+    .no-preloader .preloader-overlay {
+        display: none !important;
     }
 
     .preloader-content {

@@ -11,10 +11,21 @@
             <span class="fs-4 fw-bold gradient-text">SkyBank</span>
         </a>
         
-        <!-- Theme Toggle Button -->
-        <button id="theme-toggle" class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Toggle Theme">
-            <i class="bi bi-moon-stars fs-5 text-primary" id="theme-icon"></i>
-        </button>
+        <!-- Global Toggles -->
+        <div class="d-flex gap-2">
+            <!-- Preloader Toggle -->
+            <button id="preloader-toggle" class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Toggle Preloader Animation">
+                <i class="bi bi-lightning-charge fs-5 text-success" id="preloader-icon"></i>
+            </button>
+            
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="btn btn-link p-0 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center shadow-sm" style="width: 42px; height: 42px; background: var(--glass-bg);" title="Switch to Dark/Light Mode">
+                <div class="theme-icon-wrapper position-relative" style="width: 20px; height: 20px;">
+                    <i class="bi bi-sun-fill position-absolute start-50 top-50 translate-middle fs-5 text-warning theme-sun" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(-90deg) scale(0);"></i>
+                    <i class="bi bi-moon-stars-fill position-absolute start-50 top-50 translate-middle fs-5 text-primary theme-moon" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(90deg) scale(0);"></i>
+                </div>
+            </button>
+        </div>
     </div>
     <hr class="text-muted opacity-25">
     <ul class="nav nav-pills flex-column mb-auto gap-1">
@@ -88,21 +99,57 @@
     // Theme Toggle Logic
     window.addEventListener('DOMContentLoaded', () => {
         const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
+        const sunIcon = document.querySelector('.theme-sun');
+        const moonIcon = document.querySelector('.theme-moon');
         
         function updateIcon(theme) {
             if (theme === 'dark') {
-                themeIcon.classList.replace('bi-moon-stars', 'bi-sun');
-                themeIcon.classList.replace('text-primary', 'text-warning');
+                sunIcon.style.opacity = '1';
+                sunIcon.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
+                moonIcon.style.opacity = '0';
+                moonIcon.style.transform = 'translate(-50%, -50%) rotate(90deg) scale(0)';
             } else {
-                themeIcon.classList.replace('bi-sun', 'bi-moon-stars');
-                themeIcon.classList.replace('text-warning', 'text-primary');
+                sunIcon.style.opacity = '0';
+                sunIcon.style.transform = 'translate(-50%, -50%) rotate(-90deg) scale(0)';
+                moonIcon.style.opacity = '1';
+                moonIcon.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
             }
         }
 
         // Initialize icon state
-        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
         updateIcon(currentTheme);
+
+        // Preloader Toggle Logic
+        const preloaderToggle = document.getElementById('preloader-toggle');
+        const preloaderIcon = document.getElementById('preloader-icon');
+
+        function updatePreloaderIcon(enabled) {
+            if (enabled) {
+                preloaderIcon.classList.replace('bi-lightning', 'bi-lightning-charge');
+                preloaderIcon.classList.add('text-success');
+                preloaderIcon.classList.remove('text-muted');
+            } else {
+                preloaderIcon.classList.replace('bi-lightning-charge', 'bi-lightning');
+                preloaderIcon.classList.remove('text-success');
+                preloaderIcon.classList.add('text-muted');
+            }
+        }
+
+        // Initialize state
+        const isPreloaderDisabled = localStorage.getItem('disablePreloader') === 'true';
+        updatePreloaderIcon(!isPreloaderDisabled);
+
+        preloaderToggle.addEventListener('click', () => {
+            const currentDisabled = localStorage.getItem('disablePreloader') === 'true';
+            const newDisabled = !currentDisabled;
+            localStorage.setItem('disablePreloader', newDisabled);
+            updatePreloaderIcon(!newDisabled);
+            
+            // Show alert for feedback
+            const status = newDisabled ? 'disabled' : 'enabled';
+            alert(`Preloader has been ${status}. It will take effect on next refresh.`);
+        });
 
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
@@ -112,11 +159,11 @@
             localStorage.setItem('theme', newTheme);
             updateIcon(newTheme);
             
-            // Optional: Add a brief animation class
-            themeIcon.style.transform = 'rotate(360deg)';
+            // Add a brief pulse animation to the button
+            themeToggle.style.transform = 'scale(0.85)';
             setTimeout(() => {
-                themeIcon.style.transform = 'rotate(0deg)';
-            }, 500);
+                themeToggle.style.transform = 'scale(1)';
+            }, 150);
         });
     });
 </script>
