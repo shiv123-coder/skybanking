@@ -43,3 +43,4 @@
     </script>
 </head>
 <body>
+    <jsp:include page="preloader.jsp" />
