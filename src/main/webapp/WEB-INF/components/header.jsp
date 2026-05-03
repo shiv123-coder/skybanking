@@ -19,6 +19,10 @@
     <!-- Premium Custom CSS -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/premium.css">
     
+    <!-- App Icon / Favicon -->
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/images/favicon.svg">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.svg">
+    
     <script>
         // Immediate Theme Detection (to prevent flashing)
         (function() {

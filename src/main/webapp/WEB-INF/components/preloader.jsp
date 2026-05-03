@@ -42,7 +42,7 @@
         <div class="loader-3d-container">
             <div class="orb-shadow"></div>
             <div class="orb">
-                <div class="orb-inner"></div>
+                <img src="${pageContext.request.contextPath}/images/favicon.svg" alt="SkyBanking Logo" style="width: 100%; height: 100%; padding: 12px; filter: drop-shadow(0 0 10px var(--loader-glow));">
             </div>
             <div class="ring ring-1"></div>
             <div class="ring ring-2"></div>
