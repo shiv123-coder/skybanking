@@ -5,11 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Sky Banking System</title>
+    <!-- App Icon / Favicon -->
+    <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/images/favicon.svg">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.svg">
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="../css/adminStyle.css" rel="stylesheet">
+    <!-- Global Theme Script -->
+    <script src="${pageContext.request.contextPath}/js/theme.js" defer></script>
+    <script>
+        // Immediate Theme Detection (to prevent flashing)
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const themeToApply = savedTheme || systemTheme;
+            document.documentElement.setAttribute('data-theme', themeToApply);
+        })();
+    </script>
 </head>
 <body class="admin-login-body">
     <div class="container">

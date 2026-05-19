@@ -6,9 +6,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management - Admin Panel</title>
+    <!-- App Icon / Favicon -->
+    <link rel="icon" type="image/svg+xml" href="<%= request.getContextPath() %>/images/favicon.svg">
+    <link rel="shortcut icon" href="<%= request.getContextPath() %>/images/favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="<%= request.getContextPath() %>/css/adminStyle.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
+    <!-- Global Theme Script -->
+    <script src="<%= request.getContextPath() %>/js/theme.js" defer></script>
+    <script>
+        // Immediate Theme Detection (to prevent flashing)
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            const themeToApply = savedTheme || systemTheme;
+            document.documentElement.setAttribute('data-theme', themeToApply);
+        })();
+    </script>
 </head>
 <body>
     <!-- Navbar -->

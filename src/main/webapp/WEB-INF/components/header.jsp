@@ -23,6 +23,9 @@
     <link rel="icon" type="image/svg+xml" href="${pageContext.request.contextPath}/images/favicon.svg">
     <link rel="shortcut icon" href="${pageContext.request.contextPath}/images/favicon.svg">
     
+    <!-- Global Theme Script -->
+    <script src="${pageContext.request.contextPath}/js/theme.js" defer></script>
+    
     <script>
         // Immediate Theme Detection (to prevent flashing)
         (function() {

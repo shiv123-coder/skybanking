@@ -368,3 +368,183 @@
         box-shadow: none !important;
     }
 }
+
+/* Modern Floating Theme Toggle Button for Admin */
+.global-theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10000;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: all 0.3s ease;
+}
+
+.global-theme-toggle:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 15px 35px rgba(102, 126, 234, 0.25);
+    border-color: #667eea;
+}
+
+.global-theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.global-theme-toggle .theme-icon-wrapper {
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.global-theme-toggle .theme-sun,
+.global-theme-toggle .theme-moon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Theme States */
+[data-theme='light'] .global-theme-toggle .theme-sun {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-90deg) scale(0);
+}
+[data-theme='light'] .global-theme-toggle .theme-moon {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    color: #667eea;
+}
+
+/* Dark Theme States */
+[data-theme='dark'] .global-theme-toggle .theme-sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    color: #f59e0b;
+}
+[data-theme='dark'] .global-theme-toggle .theme-moon {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(90deg) scale(0);
+}
+
+/* Dark Mode Overrides for Admin Panel */
+[data-theme='dark'] {
+    --bg-color: #0d1117;
+    --text-primary: #f0f6fc;
+    --text-secondary: #8b949e;
+    --surface-color: #161b22;
+    --border-color: #30363d;
+}
+
+[data-theme='dark'] body {
+    background-color: #0d1117;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .global-theme-toggle {
+    background: rgba(22, 27, 34, 0.85);
+    border-color: rgba(48, 54, 61, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .admin-login-card {
+    background: #161b22;
+    color: #f0f6fc;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    border: 1px solid #30363d;
+}
+
+[data-theme='dark'] .admin-login-title {
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .admin-login-subtitle {
+    color: #8b949e;
+}
+
+[data-theme='dark'] .sidebar {
+    background-color: #161b22 !important;
+    border-right: 1px solid #30363d;
+}
+
+[data-theme='dark'] .sidebar .nav-link {
+    color: #c9d1d9;
+}
+
+[data-theme='dark'] .sidebar .nav-link:hover {
+    background-color: #21262d;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .sidebar .nav-link.active {
+    background-color: #667eea;
+    color: white;
+}
+
+[data-theme='dark'] .card {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .card-header {
+    background-color: #21262d;
+    border-bottom: 1px solid #30363d;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .table {
+    color: #c9d1d9;
+}
+
+[data-theme='dark'] .table th {
+    background-color: #21262d;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+[data-theme='dark'] .table-hover tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+[data-theme='dark'] .search-filter-container {
+    background-color: #161b22;
+    border: 1px solid #30363d;
+}
+
+[data-theme='dark'] .form-control, [data-theme='dark'] .form-select {
+    background-color: #0d1117;
+    border: 1px solid #30363d;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .form-control:focus, [data-theme='dark'] .form-select:focus {
+    background-color: #161b22;
+    color: #f0f6fc;
+}
+
+[data-theme='dark'] .text-muted {
+    color: #8b949e !important;
+}
+
+[data-theme='dark'] .text-dark, [data-theme='dark'] .text-gray-800 {
+    color: #f0f6fc !important;
+}
+
+[data-theme='dark'] .bg-light {
+    background-color: #161b22 !important;
+}

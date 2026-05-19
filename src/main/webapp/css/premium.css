@@ -373,4 +373,77 @@ a, button, .card, .glass-panel, .glass-card, .form-control, table, td, th, .badg
     transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
 
+/* Modern Floating Theme Toggle Button */
+.global-theme-toggle {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 10000;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+.global-theme-toggle:hover {
+    transform: scale(1.1) translateY(-3px);
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.25);
+    border-color: var(--primary-color);
+}
+
+.global-theme-toggle:active {
+    transform: scale(0.95);
+}
+
+.global-theme-toggle .theme-icon-wrapper {
+    position: relative;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.global-theme-toggle .theme-sun,
+.global-theme-toggle .theme-moon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.4rem;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Light Theme States */
+[data-theme='light'] .global-theme-toggle .theme-sun {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(-90deg) scale(0);
+}
+[data-theme='light'] .global-theme-toggle .theme-moon {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    color: var(--primary-color);
+}
+
+/* Dark Theme States */
+[data-theme='dark'] .global-theme-toggle .theme-sun {
+    opacity: 1;
+    transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    color: #f59e0b;
+}
+[data-theme='dark'] .global-theme-toggle .theme-moon {
+    opacity: 0;
+    transform: translate(-50%, -50%) rotate(90deg) scale(0);
+}
+
+/* Hide global toggle if sidebar is visible to keep layout clean */
+body:has(.sidebar) .global-theme-toggle {
+    display: none !important;
+}
+
 

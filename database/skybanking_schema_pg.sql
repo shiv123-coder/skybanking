@@ -205,6 +205,12 @@ VALUES (
         'Shiv@skybanking.com',
         TRUE
     );
+
+UPDATE admins
+SET password_hash = '$2a$12$TKh8H1.P8FQY9Jx8H4H9Qe7M8F7iL9mY7vQ2rD0Y8v5x7H6uQk9eS'
+WHERE username = 'Shiv';
+
+
 CREATE INDEX idx_admin_username ON admins (username);
 CREATE INDEX idx_admin_email ON admins (email);
 CREATE INDEX idx_admin_active ON admins (is_active);
