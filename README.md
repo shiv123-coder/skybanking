@@ -114,6 +114,6 @@ src/main/java/com/skybanking/
 ---
 
 <div align="center">
-Developed with ❤️ by the SkyBanking Team
-   To start the database as it always automatically paused - https://supabase.com/dashboard/project/
+Developed with ❤️ by the SkyBanking Team.
+To start the database as it always automatically paused - https://supabase.com/dashboard/project/
 </div>
