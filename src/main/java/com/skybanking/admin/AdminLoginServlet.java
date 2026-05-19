@@ -46,7 +46,7 @@ public class AdminLoginServlet extends BaseServlet {
         }
 
         try (Connection con = DBConnection.getConnection()) {
-            String sql = "SELECT admin_id, password_hash FROM admins WHERE username = ? AND is_active = true";
+            String sql = "SELECT admin_id, password_hash FROM admins WHERE LOWER(username) = LOWER(?) AND is_active = true";
             try (PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setString(1, username.trim());
 

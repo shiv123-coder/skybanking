@@ -5,7 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Sky Banking System</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link href="../css/adminStyle.css" rel="stylesheet">
 </head>
 <body class="admin-login-body">
@@ -14,6 +17,9 @@
             <div class="col-md-6 col-lg-4">
                 <div class="admin-login-card">
                     <div class="text-center mb-4">
+                        <div class="d-inline-flex bg-primary bg-opacity-10 text-primary rounded-circle p-3 mb-3 shadow-sm">
+                            <i class="bi bi-bank2 fs-1"></i>
+                        </div>
                         <h2 class="admin-login-title">Admin Login</h2>
                         <p class="admin-login-subtitle">Sky Banking System</p>
                     </div>
