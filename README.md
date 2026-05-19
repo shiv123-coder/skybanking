@@ -247,4 +247,3 @@ Also verify that no admin credentials, API keys, SMTP passwords, Stripe keys, da
 Developed with ❤️ by the **SkyBanking Team**
 
 </div>
-```
