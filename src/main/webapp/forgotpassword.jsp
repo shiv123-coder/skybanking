@@ -23,6 +23,7 @@
         <jsp:include page="WEB-INF/components/alerts.jsp" />
 
         <form id="forgotForm" action="sendotp" method="post">
+            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
             <input type="hidden" name="type" value="forgot">
 
             <div class="mb-3">

@@ -25,6 +25,7 @@
                 <jsp:include page="WEB-INF/components/alerts.jsp" />
 
                 <form action="loan/apply" method="post">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label fw-semibold text-secondary small ms-1">PRINCIPAL AMOUNT (₹)</label>

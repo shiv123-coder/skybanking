@@ -25,6 +25,7 @@
                 <jsp:include page="WEB-INF/components/alerts.jsp" />
 
                 <form action="deposit" method="post" class="mt-4">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <div class="mb-4">
                         <label for="amount" class="form-label fw-semibold text-secondary small ms-1">AMOUNT TO DEPOSIT</label>
                         <div class="position-relative">

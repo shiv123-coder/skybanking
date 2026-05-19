@@ -86,6 +86,7 @@
                                 <% Map<String,Object> adminProfile = (Map<String,Object>) request.getAttribute("adminProfile"); %>
                                 <% if (adminProfile != null) { %>
                                 <form method="post" action="settings">
+                                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                     <input type="hidden" name="action" value="update_profile">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -144,6 +145,7 @@
                             <div class="card-header"><h5 class="mb-0">Change Password</h5></div>
                             <div class="card-body">
                                 <form method="post" action="settings">
+                                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                     <input type="hidden" name="action" value="change_password">
                                     <div class="row">
                                         <div class="col-md-6">
@@ -182,6 +184,7 @@
                                 <% Map<String,Object> systemSettings = (Map<String,Object>) request.getAttribute("systemSettings"); %>
                                 <% if (systemSettings != null) { %>
                                 <form method="post" action="settings">
+                                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                     <input type="hidden" name="action" value="update_system_settings">
                                     <div class="row">
                                         <div class="col-md-6">

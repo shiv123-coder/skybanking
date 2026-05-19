@@ -63,6 +63,7 @@
         <% } %>
 
         <form id="otpForm" action="verifyotp" method="post" class="mt-4">
+            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
             <div class="mb-4">
                 <label for="otp" class="form-label text-secondary small fw-bold text-center w-100">ENTER 6-DIGIT OTP</label>
                 <input type="text" name="otp" id="otp" class="form-control form-control-lg text-center fw-bold fs-3 bg-light" required autofocus autocomplete="one-time-code" style="letter-spacing: 0.75rem;">
@@ -131,7 +132,7 @@
         fetch('<%= resendAction %>', {
             method: 'POST',
             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: 'type=<%= otpType %>'
+            body: 'type=<%= otpType %>&csrf_token=<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>'
         })
         .then(response => response.text())
         .then(() => {

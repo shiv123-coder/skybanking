@@ -90,6 +90,7 @@
                 <!-- Search & Filter -->
                 <div class="search-filter-container mb-3">
                     <form method="post" action="users">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                         <input type="hidden" name="action" value="search">
                         <div class="row g-2">
                             <div class="col-md-4">
@@ -169,6 +170,7 @@
 
                                                         <% if (user.isActive()) { %>
                                                             <form method="post" action="users" style="display:inline;">
+                                                                <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                                                 <input type="hidden" name="action" value="deactivate">
                                                                 <input type="hidden" name="userId" value="<%= user.getId() %>">
                                                                 <button type="submit" class="btn btn-outline-warning btn-sm" title="Deactivate"
@@ -178,6 +180,7 @@
                                                             </form>
                                                         <% } else { %>
                                                             <form method="post" action="users" style="display:inline;">
+                                                                <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                                                 <input type="hidden" name="action" value="activate">
                                                                 <input type="hidden" name="userId" value="<%= user.getId() %>">
                                                                 <button type="submit" class="btn btn-outline-success btn-sm" title="Activate">
@@ -187,6 +190,7 @@
                                                         <% } %>
 
                                                         <form method="post" action="users" style="display:inline;">
+                                                            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                                             <input type="hidden" name="action" value="delete">
                                                             <input type="hidden" name="userId" value="<%= user.getId() %>">
                                                             <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete"

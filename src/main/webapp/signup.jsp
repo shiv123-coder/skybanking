@@ -25,6 +25,7 @@
         <% if (!loggedIn) { %>
         <!-- action now points to /signup -->
         <form action="signup" method="post">
+            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
             <div class="mb-3">
                 <label class="form-label text-secondary small fw-bold ms-1">FULL NAME</label>
                 <div class="position-relative">

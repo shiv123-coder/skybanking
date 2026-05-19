@@ -46,6 +46,7 @@
                 <% if(isOtpVerified == null || !isOtpVerified){ %>
                     <!-- Step 1: Send OTP -->
                     <form action="updateProfile" method="post" class="mt-4">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                         <input type="hidden" name="action" value="sendOtp">
 
                         <div class="bg-light p-4 rounded-4 mb-4 border shadow-sm">
@@ -106,6 +107,7 @@
                     </div>
                     
                     <form action="updateProfile" method="post" class="mt-4">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                         <input type="hidden" name="action" value="updateProfile">
                         
                         <div class="row g-3">

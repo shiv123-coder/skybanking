@@ -21,6 +21,7 @@
         <jsp:include page="WEB-INF/components/alerts.jsp" />
 
         <form action="${pageContext.request.contextPath}/resetpassword" method="post" class="mt-4">
+            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
             <div class="mb-4 position-relative">
                 <label class="form-label text-secondary small fw-bold ms-1">NEW PASSWORD</label>
                 <div class="input-group">

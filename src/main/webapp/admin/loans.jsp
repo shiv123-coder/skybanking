@@ -36,14 +36,17 @@
             <td><span class="badge bg-info"><%= l.get("status") %></span></td>
             <td>
                 <form action="loans" method="post" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
                     <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
                 </form>
                 <form action="loans" method="post" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
                     <button name="action" value="reject" class="btn btn-warning btn-sm">Reject</button>
                 </form>
                 <form action="loans" method="post" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
                     <button name="action" value="disburse" class="btn btn-primary btn-sm">Disburse</button>
                 </form>

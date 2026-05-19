@@ -28,6 +28,7 @@
                 <jsp:include page="WEB-INF/components/alerts.jsp" />
 
                 <form action="transfer" method="post" class="mt-4">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <% if (request.getParameter("ts") != null) { %>
                         <input type="hidden" name="ts" value="<%= request.getParameter("ts") %>">
                     <% } %>

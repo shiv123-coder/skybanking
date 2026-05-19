@@ -23,6 +23,7 @@
         <jsp:include page="WEB-INF/components/alerts.jsp" />
 
         <form action="${pageContext.request.contextPath}/login" method="post">
+            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
             <div class="mb-4">
                 <label class="form-label ms-1">Username</label>
                 <div class="position-relative">

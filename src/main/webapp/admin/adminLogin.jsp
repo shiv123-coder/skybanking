@@ -26,6 +26,7 @@
                     <% } %>
                     
                     <form action="${pageContext.request.contextPath}/admin/login" method="post">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username" required>

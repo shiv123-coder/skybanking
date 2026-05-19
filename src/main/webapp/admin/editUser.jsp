@@ -15,6 +15,7 @@
                 <div class="container mt-4">
                     <h2>Edit User</h2>
                     <form action="users" method="post">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                         <input type="hidden" name="action" value="update">
                         <input type="hidden" name="userId" value="<%= user.getId() %>">
 
