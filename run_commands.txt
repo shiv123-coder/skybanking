@@ -94,7 +94,7 @@ Open your browser and go to:
 http://localhost:9090/BankingWebApp/admin/
 ```
 **Username:** `Shiv`
-**Password:** `Shivmali@123`
+**Password:** `Shiv@123`
 
 #### 🔹 **For User Login:**
 Open your browser and go to:
