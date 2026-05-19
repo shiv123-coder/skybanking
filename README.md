@@ -1,126 +1,250 @@
 <div align="center">
 
-![SkyBanking Hero](assets/images/banking_system_hero_3d_1777647711696.png)
+<img src="assets/images/banking_system_hero_3d_1777647711696.png" alt="SkyBanking Hero" width="850"/>
 
 # 🌌 SkyBanking: Enterprise-Grade Financial Ecosystem
+
 **Secure | Scalable | Seamless**
 
-[![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=java)](https://www.oracle.com/java/)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue?style=for-the-badge&logo=postgresql)](https://www.postgresql.org/)
-[![Stripe](https://img.shields.io/badge/Stripe-Integration-635BFF?style=for-the-badge&logo=stripe)](https://stripe.com/)
-[![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apache-maven)](https://maven.apache.org/)
+![Java](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15+-blue?style=for-the-badge&logo=postgresql)
+![Stripe](https://img.shields.io/badge/Stripe-Integration-635BFF?style=for-the-badge&logo=stripe)
+![Maven](https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven)
 
 </div>
 
 ---
 
 ## 🏛️ Project Overview
-SkyBanking is a comprehensive, MNC-ready banking solution built with a modern Java stack. It provides a robust platform for digital banking, featuring secure transaction handling, real-time auditing, and advanced administrative controls.
 
-### 📊 System Architecture & Flow
-The following diagram illustrates the core system flow in a professional, hand-drawn "tldraw" style:
+**SkyBanking** is a secure and scalable banking web application built using a modern Java-based backend with PostgreSQL database support. It provides digital banking features such as user registration, login, account management, deposits, withdrawals, peer-to-peer transfers, QR-based payments, PDF reports, and administrator-level monitoring.
 
-![System Flowchart](assets/images/banking_system_flowchart_tldraw_1777647691733.png)
+The system focuses on clean architecture, secure transaction handling, role-based access, database consistency, and production-ready deployment.
 
+---
+
+## 📊 System Architecture & Flow
+
+<div align="center">
+
+<img src="assets/images/banking_system_flowchart_tldraw_1777647691733.png" alt="SkyBanking System Flowchart" width="850"/>
+
+</div>
 
 ---
 
 ## 🚀 Core Features
 
-### 💎 For Users
-- **Secure Authentication**: Multi-step registration with OTP verification.
-- **Dynamic Account Management**: Real-time balance updates and account controls.
-- **Versatile Transactions**: Support for Deposits, Withdrawals, and Peer-to-Peer Transfers.
-- **Smart Reports**: Professional PDF statements and transaction invoices.
-- **QR Payment Ecosystem**: Secure, time-bound QR code generation and processing.
+### 💎 User Features
 
-### 🛡️ For Administrators
-- **Insightful Dashboard**: Real-time statistics and growth charts.
-- **Advanced User Control**: Comprehensive lifecycle management for all banking users.
-- **Audit Logging**: Deep-dive into OTP, security, and transaction history.
-- **System Configuration**: Dynamic adjustment of tax rates, limits, and interest.
+- Secure user registration and login
+- OTP-based verification flow
+- Account balance management
+- Deposit and withdrawal support
+- Peer-to-peer money transfer
+- QR code-based payment system
+- Transaction history tracking
+- PDF account statements and invoices
+- Profile and account information management
+
+### 🛡️ Admin Features
+
+- Admin login and secure dashboard
+- User account monitoring
+- Transaction activity overview
+- OTP and security audit tracking
+- Banking configuration management
+- Tax, limit, and interest-related controls
+- User lifecycle management
+
+---
+
+## 🛠️ Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Backend | Java 21, Servlets, JSP |
+| Database | PostgreSQL |
+| Build Tool | Maven |
+| Payment Gateway | Stripe |
+| Security | BCrypt, OTP, Session Handling |
+| Reports | PDF Generation |
+| Deployment | Apache Tomcat / Render |
+| Version Control | Git & GitHub |
+
+---
+
+## 📁 Project Structure
+
+```text
+src/main/java/com/skybanking/
+├── model/        # Data models and entity classes
+├── util/         # Utility services, validation, PDF, tax, security
+├── web/          # User-side servlet controllers
+└── admin/        # Admin-side servlet controllers
+````
 
 ---
 
 ## 🛠️ Installation & Rapid Deployment
 
-### 1. Database Initialization
-1. **Create Database**:
-   ```sql
-   CREATE DATABASE skybank;
-   ```
-2. **Import Schema**:
-   ```bash
-   psql -U postgres -d skybank -f database/skybanking_schema_pg.sql
-   ```
+### 1. Clone the Repository
 
-### 2. Environment Configuration
-Create a `.env` file in the root directory based on `.env.example`:
+```bash
+git clone <your-repository-url>
+cd SkyBanking
+```
+
+---
+
+### 2. Database Initialization
+
+Create the database:
+
+```sql
+CREATE DATABASE skybank;
+```
+
+Import the PostgreSQL schema:
+
+```bash
+psql -U postgres -d skybank -f database/skybanking_schema_pg.sql
+```
+
+---
+
+### 3. Environment Configuration
+
+Create a `.env` file in the root directory using `.env.example` as reference.
+
 ```env
 DB_URL=jdbc:postgresql://localhost:5432/skybank
 DB_USER=postgres
 DB_PASSWORD=your_secure_password
 
-STRIPE_SECRET_KEY=sk_test_...
-SMTP_PASSWORD="your_app_password"
+STRIPE_SECRET_KEY=sk_test_your_key_here
+SMTP_PASSWORD=your_app_password
 ```
 
-### 3. Build & Run
-<details>
-<summary><b>Click to expand build instructions</b></summary>
+> Never commit the `.env` file to GitHub.
 
-1. **Maven Build**:
-   ```bash
-   mvn clean package
-   ```
-2. **Deployment**:
-   - Copy `target/BankingWebApp.war` to Tomcat's `webapps` folder.
-   - Start Tomcat: `bin/startup.bat`.
-3. **Access**:
-   - Portal: `http://localhost:9090/BankingWebApp/`
-   - Admin: `http://localhost:9090/BankingWebApp/admin/`
-  
-   - After deployment - https://skybanking.onrender.com/admin/login
-   -                   - https://skybanking.onrender.com/login
+---
 
-</details>
+### 4. Build the Project
+
+```bash
+mvn clean package
+```
+
+---
+
+### 5. Deploy on Tomcat
+
+Copy the generated WAR file:
+
+```text
+target/BankingWebApp.war
+```
+
+Paste it inside the Tomcat `webapps` directory.
+
+Start Tomcat:
+
+```bash
+bin/startup.bat
+```
+
+---
+
+## 🌐 Application URLs
+
+### Local Deployment
+
+```text
+User Portal:
+http://localhost:9090/BankingWebApp/
+
+Admin Portal:
+http://localhost:9090/BankingWebApp/admin/
+```
+
+### Live Deployment
+
+```text
+User Login:
+https://skybanking.onrender.com/login
+
+Admin Login:
+https://skybanking.onrender.com/admin/login
+```
+
+---
+
+## 🗄️ Database Hosting Note
+
+If the database is hosted on Supabase and it gets paused due to inactivity, start it manually from the Supabase dashboard:
+
+```text
+https://supabase.com/dashboard/project/
+```
 
 ---
 
 ## 🔐 Security Hardening
-This system implements industry-standard security protocols:
-- **BCrypt Hashing**: Modern, salted password storage.
-- **ACID Transactions**: Atomic operations with `SELECT ... FOR UPDATE` locking.
-- **Stripe Webhooks**: Cryptographically signed payment verification.
-- **Rate Limiting**: Brute-force protection on sensitive endpoints.
-- **CSRF & XSS Protection**: Secure nonces and sanitized inputs.
+
+SkyBanking follows essential security practices required for public deployment:
+
+* Passwords stored using BCrypt hashing
+* Sensitive credentials loaded from environment variables
+* No hardcoded database passwords or secret keys
+* Secure session-based authentication
+* Input validation on critical forms
+* SQL injection protection using prepared statements
+* Transaction safety using ACID-compliant database operations
+* Safe payment verification using Stripe integration
+* Audit logs for important system activities
 
 ---
 
-## 📁 Project Structure
-```text
-src/main/java/com/skybanking/
-├── model/        # Enterprise Data Objects
-├── util/         # Core Services (Pdf, Tax, Validation)
-├── web/          # User-Facing Servlets
-└── admin/        # Administrative Control Logic
+## ⚙️ Important GitHub Safety Rules
+
+Before pushing the project publicly, ensure the following files are ignored:
+
+```gitignore
+.env
+*.log
+*.pdf
+*.docx
+*.key
+*.pem
+*.p12
+*.jks
+target/
+.idea/
+.vscode/
 ```
+
+Also verify that no admin credentials, API keys, SMTP passwords, Stripe keys, database passwords, or private keys are committed.
 
 ---
 
 ## 🔮 Future Roadmap
-- [ ] Mobile Application (Android/iOS)
-- [ ] Multi-Currency & Cross-Border Support
-- [ ] AI-Powered Fraud Detection
-- [ ] Containerization (Docker & K8s)
+
+* [ ] Android and iOS mobile application
+* [ ] Multi-currency banking support
+* [ ] AI-powered fraud detection
+* [ ] Docker-based deployment
+* [ ] Kubernetes scaling support
+* [ ] Advanced analytics dashboard
+* [ ] Email and SMS alert system
 
 ---
 
-<div align="center">
-Developed with ❤️ by the SkyBanking Team.
-</div>
-<div align="center">
-To start the database as it always automatically paused - https://supabase.com/dashboard/project/
-</div>
+## 👨‍💻 Developer
 
+<div align="center">
 
+Developed with ❤️ by the **SkyBanking Team**
+
+</div>
+```
