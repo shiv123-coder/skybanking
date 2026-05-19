@@ -79,6 +79,9 @@ SMTP_PASSWORD="your_app_password"
 3. **Access**:
    - Portal: `http://localhost:9090/BankingWebApp/`
    - Admin: `http://localhost:9090/BankingWebApp/admin/`
+  
+   - After deployment - https://skybanking.onrender.com/admin/login
+   -                   - https://skybanking.onrender.com/login
 
 </details>
 
