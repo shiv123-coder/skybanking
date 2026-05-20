@@ -247,7 +247,7 @@ public class AdminSettingsServlet extends BaseServlet {
 
     private void updateSystemSetting(Connection con, String key, String value) throws SQLException {
         String sql = "INSERT INTO system_settings (setting_key, setting_value) VALUES (?, ?) " +
-                "ON DUPLICATE KEY UPDATE setting_value=?";
+                "ON CONFLICT (setting_key) DO UPDATE SET setting_value=?";
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, key);
             ps.setString(2, value);

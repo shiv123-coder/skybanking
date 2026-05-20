@@ -17,7 +17,11 @@ COPY --from=build /app/target/skybanking.war /usr/local/tomcat/webapps/ROOT.war
 
 # Set default PORT if not provided by Render
 ENV PORT=8080
-ENV JAVA_OPTS="-Djava.awt.headless=true -XX:+UseG1GC"
+ENV JAVA_OPTS="-Djava.awt.headless=true -XX:+UseG1GC -XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=40.0"
 
-# Dynamically update Tomcat's port to match Render's environment
-CMD sed -i "s/8080/$PORT/g" /usr/local/tomcat/conf/server.xml && catalina.sh run
+# Dynamically update Tomcat's connector to bind to ${PORT} on 0.0.0.0, optimize pool threads, disable shutdown port, and skip unnecessary JAR scanning
+CMD sed -i 's/port="8080"/port="${PORT}" address="0.0.0.0" maxThreads="150" minSpareThreads="10" acceptCount="100" disableUploadTimeout="true"/g' /usr/local/tomcat/conf/server.xml && \
+    sed -i 's/port="8005"/port="-1"/g' /usr/local/tomcat/conf/server.xml && \
+    echo "tomcat.util.scan.StandardJarScanFilter.jarsToSkip=*.jar" >> /usr/local/tomcat/conf/catalina.properties && \
+    echo "tomcat.util.scan.StandardJarScanFilter.jarsToScan=jstl-*.jar,jakarta.servlet.jsp.jstl-*.jar,standard-*.jar,taglibs-*.jar,glassfish-*.jar" >> /usr/local/tomcat/conf/catalina.properties && \
+    catalina.sh run

@@ -29,14 +29,25 @@ public class AppInitializer implements ServletContextListener {
 
 		try {
 			if (DBConnection.isAvailable()) {
-				DBMigrations.ensureSchema();
-				System.out.println("✅ DB Ready");
+				Thread migrationThread = new Thread(() -> {
+					try {
+						System.out.println("⏳ Running database schema migrations in background thread...");
+						DBMigrations.ensureSchema();
+						System.out.println("✅ Database schema migrations and seeding completed.");
+					} catch (Throwable t) {
+						System.err.println("⚠️ Asynchronous DB migration checking failed: " + t.getMessage());
+						t.printStackTrace();
+					}
+				}, "DB-Migration-Thread");
+				migrationThread.setDaemon(true);
+				migrationThread.start();
+				System.out.println("🚀 Asynchronous DB Migration Thread started.");
 			} else {
-				System.out.println("⚠️ No DB connection. Running in LIMITED mode.");
+				System.out.println("⚠️ No DB configuration detected. Skipping background migrations.");
 			}
 
 		} catch (Throwable t) {
-			System.err.println("⚠️ DB startup error ignored:");
+			System.err.println("⚠️ Failed to dispatch DB startup thread:");
 			t.printStackTrace();
 		}
 	}

@@ -68,6 +68,11 @@ public class EmailUtil {
         props.put("mail.smtp.port", SMTP_PORT);
         props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
+        // ✅ Production Hardening: Set explicit timeouts to prevent thread blocks
+        props.put("mail.smtp.connectiontimeout", "5000"); // 5s connection timeout
+        props.put("mail.smtp.timeout", "5000");           // 5s read timeout
+        props.put("mail.smtp.writetimeout", "5000");      // 5s write timeout
+
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
