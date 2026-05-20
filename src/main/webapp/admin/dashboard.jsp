@@ -82,6 +82,14 @@
                     </div>
                 </div>
 
+                <% String error = (String) request.getAttribute("error"); %>
+                <% if (error != null && !error.isEmpty()) { %>
+                    <div class="alert alert-danger alert-dismissible fade show mt-2 shadow-sm" role="alert">
+                        <i class="fas fa-exclamation-circle me-2"></i><strong>Error:</strong> <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                <% } %>
+
                 <% Map<String, Object> stats = (Map<String, Object>) request.getAttribute("stats"); %>
                 <% if (stats != null) { %>
                 <!-- Statistics Cards -->
@@ -259,6 +267,13 @@
                         </div>
                     </div>
                 </div>
+                <% } else { %>
+                    <div class="alert alert-warning mt-4 shadow-sm" role="alert">
+                        <h4 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> No Dashboard Data Available</h4>
+                        <p>We are unable to load the dashboard statistics at this moment. This might be because there are no users, accounts, or transactions registered in the system yet.</p>
+                        <hr>
+                        <p class="mb-0">Please register new users or verify database connectivity/logs for any underlying issues.</p>
+                    </div>
                 <% } %>
             </main>
         </div>

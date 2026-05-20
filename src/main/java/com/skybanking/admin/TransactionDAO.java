@@ -40,11 +40,11 @@ public class TransactionDAO {
             parameters.add(status);
         }
         if (dateFrom != null && !dateFrom.isEmpty()) {
-            sql.append(" AND DATE(t.txn_date) >= ?");
+            sql.append(" AND CAST(t.txn_date AS date) >= CAST(? AS date)");
             parameters.add(dateFrom);
         }
         if (dateTo != null && !dateTo.isEmpty()) {
-            sql.append(" AND DATE(t.txn_date) <= ?");
+            sql.append(" AND CAST(t.txn_date AS date) <= CAST(? AS date)");
             parameters.add(dateTo);
         }
 

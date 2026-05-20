@@ -177,7 +177,7 @@ public class AdminDashboardServlet extends BaseServlet {
     }
 
     private int getActiveUsers(Connection con) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM users WHERE last_login >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+        String sql = "SELECT COUNT(*) FROM users WHERE last_login >= NOW() - INTERVAL '30 days'";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
@@ -217,7 +217,7 @@ public class AdminDashboardServlet extends BaseServlet {
     }
 
     private int getTodayTransactions(Connection con) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM transactions WHERE DATE(txn_date) = CURDATE()";
+        String sql = "SELECT COUNT(*) FROM transactions WHERE CAST(txn_date AS date) = CURRENT_DATE";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
@@ -225,7 +225,7 @@ public class AdminDashboardServlet extends BaseServlet {
     }
 
     private double getTodayTransactionAmount(Connection con) throws SQLException {
-        String sql = "SELECT COALESCE(SUM(total_amount), 0) FROM transactions WHERE DATE(txn_date) = CURDATE()";
+        String sql = "SELECT COALESCE(SUM(total_amount), 0) FROM transactions WHERE CAST(txn_date AS date) = CURRENT_DATE";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getDouble(1) : 0.0;
@@ -233,7 +233,7 @@ public class AdminDashboardServlet extends BaseServlet {
     }
 
     private int getPendingOTPs(Connection con) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM otp_logs WHERE status = 'PENDING' AND created_at > DATE_SUB(NOW(), INTERVAL 10 MINUTE)";
+        String sql = "SELECT COUNT(*) FROM otp_logs WHERE status = 'PENDING' AND created_at > NOW() - INTERVAL '10 minutes'";
         try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
@@ -308,10 +308,10 @@ public class AdminDashboardServlet extends BaseServlet {
     
     private java.util.List<Map<String, Object>> getDailyTransactionCounts(Connection con) throws SQLException {
         java.util.List<Map<String, Object>> dailyCounts = new java.util.ArrayList<>();
-        String sql = "SELECT DATE(txn_date) as date, COUNT(*) as count " +
+        String sql = "SELECT CAST(txn_date AS date) as date, COUNT(*) as count " +
                     "FROM transactions " +
-                    "WHERE txn_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) " +
-                    "GROUP BY DATE(txn_date) " +
+                    "WHERE txn_date >= CURRENT_DATE - INTERVAL '7 days' " +
+                    "GROUP BY CAST(txn_date AS date) " +
                     "ORDER BY date";
         
         try (PreparedStatement ps = con.prepareStatement(sql);
@@ -328,10 +328,10 @@ public class AdminDashboardServlet extends BaseServlet {
 
     private java.util.List<Map<String, Object>> getDailyTransactionAmounts(Connection con) throws SQLException {
         java.util.List<Map<String, Object>> dailyAmounts = new java.util.ArrayList<>();
-        String sql = "SELECT DATE(txn_date) as date, COALESCE(SUM(total_amount), 0) as amount " +
+        String sql = "SELECT CAST(txn_date AS date) as date, COALESCE(SUM(total_amount), 0) as amount " +
                     "FROM transactions " +
-                    "WHERE txn_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) " +
-                    "GROUP BY DATE(txn_date) " +
+                    "WHERE txn_date >= CURRENT_DATE - INTERVAL '7 days' " +
+                    "GROUP BY CAST(txn_date AS date) " +
                     "ORDER BY date";
         
         try (PreparedStatement ps = con.prepareStatement(sql);

@@ -334,11 +334,11 @@ public class AdminTransactionServlet extends BaseServlet {
             parameters.add(status);
         }
         if (!dateFrom.isEmpty()) {
-            sql.append(" AND DATE(t.txn_date) >= ?");
+            sql.append(" AND CAST(t.txn_date AS date) >= CAST(? AS date)");
             parameters.add(dateFrom);
         }
         if (!dateTo.isEmpty()) {
-            sql.append(" AND DATE(t.txn_date) <= ?");
+            sql.append(" AND CAST(t.txn_date AS date) <= CAST(? AS date)");
             parameters.add(dateTo);
         }
 
@@ -400,11 +400,11 @@ public class AdminTransactionServlet extends BaseServlet {
             parameters.add(status);
         }
         if (!dateFrom.isEmpty()) {
-            sql.append(" AND DATE(t.txn_date) >= ?");
+            sql.append(" AND CAST(t.txn_date AS date) >= CAST(? AS date)");
             parameters.add(dateFrom);
         }
         if (!dateTo.isEmpty()) {
-            sql.append(" AND DATE(t.txn_date) <= ?");
+            sql.append(" AND CAST(t.txn_date AS date) <= CAST(? AS date)");
             parameters.add(dateTo);
         }
 
@@ -437,7 +437,7 @@ public class AdminTransactionServlet extends BaseServlet {
                 stats.put("totalAmount", rs.next() ? rs.getDouble(1) : 0.0);
             }
 
-            String sql3 = "SELECT COUNT(*) FROM transactions WHERE DATE(txn_date) = CURDATE()";
+            String sql3 = "SELECT COUNT(*) FROM transactions WHERE CAST(txn_date AS date) = CURRENT_DATE";
             try (PreparedStatement ps = con.prepareStatement(sql3);
                     ResultSet rs = ps.executeQuery()) {
                 stats.put("todayTransactions", rs.next() ? rs.getInt(1) : 0);
