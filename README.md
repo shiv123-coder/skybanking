@@ -206,28 +206,6 @@ SkyBanking follows essential security practices required for public deployment:
 
 ---
 
-## ⚙️ Important GitHub Safety Rules
-
-Before pushing the project publicly, ensure the following files are ignored:
-
-```gitignore
-.env
-*.log
-*.pdf
-*.docx
-*.key
-*.pem
-*.p12
-*.jks
-target/
-.idea/
-.vscode/
-```
-
-Also verify that no admin credentials, API keys, SMTP passwords, Stripe keys, database passwords, or private keys are committed.
-
----
-
 ## 🔮 Future Roadmap
 
 * [ ] Android and iOS mobile application
