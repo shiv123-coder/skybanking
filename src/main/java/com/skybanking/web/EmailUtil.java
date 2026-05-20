@@ -5,6 +5,7 @@ import jakarta.mail.internet.*;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * Email utility for sending OTPs and notifications.
@@ -19,6 +20,17 @@ import java.util.logging.Logger;
 public class EmailUtil {
 
     private static final Logger LOGGER = Logger.getLogger(EmailUtil.class.getName());
+
+    private static final Dotenv DOTENV = loadDotenv();
+
+    private static Dotenv loadDotenv() {
+        try {
+            return Dotenv.configure().ignoreIfMissing().load();
+        } catch (Exception e) {
+            LOGGER.warning("Could not load .env file, relying on system environment variables.");
+            return null;
+        }
+    }
 
     private static final String FROM_EMAIL = getEnvOrDefault("SMTP_EMAIL", "");
     private static final String PASSWORD = getEnvOrDefault("SMTP_PASSWORD", "");
@@ -38,7 +50,12 @@ public class EmailUtil {
      */
     public static void sendOtp(String toEmail, String username, int otp) {
         if (FROM_EMAIL.isEmpty() || PASSWORD.isEmpty()) {
-            LOGGER.severe("SMTP credentials not configured. Set SMTP_EMAIL and SMTP_PASSWORD environment variables.");
+            LOGGER.severe("❌ SMTP credentials not configured. Set SMTP_EMAIL and SMTP_PASSWORD in .env or environment variables. Email will NOT be sent.");
+            return;
+        }
+        
+        if (SMTP_HOST.isEmpty() || SMTP_PORT.isEmpty()) {
+            LOGGER.severe("❌ SMTP_HOST or SMTP_PORT is empty. Cannot send email.");
             return;
         }
 
@@ -90,6 +107,9 @@ public class EmailUtil {
      */
     private static String getEnvOrDefault(String key, String defaultValue) {
         String value = System.getenv(key);
-        return (value != null && !value.isEmpty()) ? value : defaultValue;
+        if ((value == null || value.trim().isEmpty()) && DOTENV != null) {
+            value = DOTENV.get(key);
+        }
+        return (value != null && !value.trim().isEmpty()) ? value.trim() : defaultValue;
     }
 }
