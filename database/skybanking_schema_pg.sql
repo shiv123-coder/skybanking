@@ -191,24 +191,6 @@ CREATE TABLE admins (
     last_login TIMESTAMP NULL,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-INSERT INTO admins (
-        username,
-        password_hash,
-        full_name,
-        email,
-        is_active
-    )
-VALUES (
-        'Shiv',
-        '$2a$10$e0MYzXy5U1JGtJ/P51X8eO2B5tBuxKq2U/3y8B34g1D5F.uPq5F6q',
-        'Shiv Mali',
-        'Shiv@skybanking.com',
-        TRUE
-    );
-
-UPDATE admins
-SET password_hash = '$2a$12$TKh8H1.P8FQY9Jx8H4H9Qe7M8F7iL9mY7vQ2rD0Y8v5x7H6uQk9eS'
-WHERE username = 'Shiv';
 
 
 CREATE INDEX idx_admin_username ON admins (username);
