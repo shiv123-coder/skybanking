@@ -64,15 +64,26 @@ Render is an excellent platform for deploying Java applications via Docker.
 ### 3. Configure Environment Variables
 In the **Environment** tab of your Render service, add the following variables:
 
-| Key | Value |
-| :--- | :--- |
-| `DB_URL` | *Your Render Internal Database URL* |
-| `DB_USER` | *Your Render DB Username* |
-| `DB_PASSWORD` | *Your Render DB Password* |
-| `SMTP_EMAIL` | *Your Gmail/Email* |
-| `SMTP_PASSWORD` | *Your App Password* |
-| `STRIPE_SECRET_KEY` | `sk_test_...` |
-| `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
+| Key | Value | Required |
+| :--- | :--- | :---: |
+| `PORT` | `10000` (Render sets this automatically) | ✅ |
+| `DB_URL` | *Your Render Internal Database URL* | ✅ |
+| `DB_USER` | *Your Render DB Username* | ✅ |
+| `DB_PASSWORD` | *Your Render DB Password* | ✅ |
+| `DB_POOL_SIZE` | `10` | Optional |
+| `SMTP_EMAIL` | *Your Gmail/Email* | ✅ |
+| `SMTP_PASSWORD` | *Your Gmail App Password* | ✅ |
+| `SMTP_HOST` | `smtp.gmail.com` | Optional |
+| `SMTP_PORT` | `587` | Optional |
+| `STRIPE_SECRET_KEY` | `sk_test_...` | ✅ |
+| `STRIPE_PUBLISHABLE_KEY` | `pk_test_...` | Optional |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_...` | Optional |
+| `ADMIN_PASSWORD` | *Your admin password* | ✅ |
+| `APP_SECRET_KEY` | *HMAC secret for QR codes* | Optional |
+| `APP_ENV` | `production` | Optional |
+| `ENABLE_PRELOADER` | `true` | Optional |
+
+> **Note**: Render automatically injects the `PORT` environment variable. The Dockerfile defaults to `10000` if not set.
 
 ### 4. Database Schema Migration
 Since this project uses a standard SQL schema, you need to import it into your Render database:
@@ -81,6 +92,50 @@ Since this project uses a standard SQL schema, you need to import it into your R
     ```bash
     psql "YOUR_EXTERNAL_DB_URL" -f database/skybanking_schema_pg.sql
     ```
+
+---
+
+## 🐳 Part 3: Local Docker Testing
+
+Before deploying to Render, test the Docker image locally:
+
+### Build
+```bash
+docker build -t skybanking .
+```
+
+### Run (simulating Render environment)
+```bash
+docker run -p 10000:10000 \
+  -e PORT=10000 \
+  -e DB_URL=jdbc:postgresql://host.docker.internal:5432/skybank \
+  -e DB_USER=postgres \
+  -e DB_PASSWORD=your_password \
+  -e SMTP_EMAIL=your_email@gmail.com \
+  -e SMTP_PASSWORD=your_app_password \
+  -e STRIPE_SECRET_KEY=sk_test_xxx \
+  -e ADMIN_PASSWORD=your_admin_password \
+  skybanking
+```
+
+### Verify
+```bash
+# Check port binding
+curl http://localhost:10000/
+
+# Expected startup logs:
+# ✅ PORT=10000
+# ✅ Tomcat connector bound to 0.0.0.0:10000
+# ✅ DB_URL set (host: ...)
+```
+
+### Troubleshooting
+| Symptom | Cause | Fix |
+| :--- | :--- | :--- |
+| `port out of range:-1` | PORT env var missing or invalid | Ensure `PORT=10000` is set |
+| Render timeout (no port detected) | Tomcat not binding to `0.0.0.0` | Dockerfile handles this automatically |
+| DB connection failed | Wrong DB_URL or credentials | Verify env vars in Render dashboard |
+| Email not sending | SMTP credentials missing | Set SMTP_EMAIL and SMTP_PASSWORD |
 
 ---
 
