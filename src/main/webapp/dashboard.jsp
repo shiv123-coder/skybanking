@@ -123,6 +123,7 @@
             <div class="d-flex justify-content-center gap-3">
                 <a href="userinfo" class="btn btn-outline-primary px-4 rounded-pill fw-semibold">View Profile</a>
                 <form action="deleteAccount" method="post" onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") %>" />
                     <button type="submit" class="btn btn-outline-danger px-4 rounded-pill fw-semibold">Delete Account</button>
                 </form>
             </div>

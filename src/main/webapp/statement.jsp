@@ -15,11 +15,16 @@
     <main class="main-content">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
             <div>
+<%
+    String currentAction = request.getParameter("action") != null ? request.getParameter("action") : "mini";
+    String currentStartDate = request.getParameter("startDate") != null ? request.getParameter("startDate") : "";
+    String currentEndDate = request.getParameter("endDate") != null ? request.getParameter("endDate") : "";
+%>
                 <h2 class="h3 mb-0 text-gray-800 fw-bold">Account Statement</h2>
                 <p class="text-muted mb-0"><%= request.getAttribute("statementType") != null ? request.getAttribute("statementType") : "Mini Statement" %></p>
             </div>
             <div class="d-flex gap-2 mt-3 mt-md-0">
-                <a href="${pageContext.request.contextPath}/statement?action=mini&format=pdf" class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm d-flex align-items-center">
+                <a href="<%= request.getContextPath() %>/statement?action=<%= currentAction %>&format=pdf&startDate=<%= currentStartDate %>&endDate=<%= currentEndDate %>" class="btn btn-primary rounded-pill px-4 fw-semibold shadow-sm d-flex align-items-center">
                     <i class="bi bi-file-earmark-pdf fs-5 me-2"></i> Download PDF
                 </a>
                 <a href="dashboard.jsp" class="btn btn-outline-secondary rounded-pill px-4 fw-semibold bg-white d-flex align-items-center">
@@ -32,44 +37,48 @@
 
         <div class="row g-4 animate-fade-up">
             <!-- Account Details -->
-            <% if (request.getAttribute("user") != null && request.getAttribute("account") != null) { %>
+            <% 
+               com.skybanking.model.User u = (com.skybanking.model.User) request.getAttribute("user");
+               com.skybanking.model.Account acc = (com.skybanking.model.Account) request.getAttribute("account");
+               if (u != null && acc != null) { 
+            %>
             <div class="col-md-6">
-                <div class="glass-panel p-4 h-100">
+                <div class="glass-panel p-4 h-100 shadow-sm border-0 transition-all hover-scale-slight">
                     <h6 class="text-uppercase text-muted fw-bold small mb-4 d-flex align-items-center">
                         <i class="bi bi-person-badge text-primary me-2"></i> Account Holder
                     </h6>
-                    <div class="mb-3 d-flex align-items-center bg-light p-3 rounded-3">
+                    <div class="mb-3 d-flex align-items-center bg-light p-3 rounded-3 border">
                         <div class="bg-white rounded-circle p-2 me-3 shadow-sm text-primary">
                             <i class="bi bi-person fs-5"></i>
                         </div>
                         <div>
                             <span class="d-block text-muted small">Name</span>
-                            <span class="text-dark fw-bold">${user.fullname}</span>
+                            <span class="text-dark fw-bold"><%= u.getFullname() %></span>
                         </div>
                     </div>
-                    <div class="mb-3 d-flex align-items-center bg-light p-3 rounded-3">
+                    <div class="mb-3 d-flex align-items-center bg-light p-3 rounded-3 border">
                         <div class="bg-white rounded-circle p-2 me-3 shadow-sm text-info">
                             <i class="bi bi-envelope fs-5"></i>
                         </div>
                         <div>
                             <span class="d-block text-muted small">Email</span>
-                            <span class="text-dark fw-bold">${user.email}</span>
+                            <span class="text-dark fw-bold"><%= u.getEmail() %></span>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center bg-light p-3 rounded-3">
+                    <div class="d-flex align-items-center bg-light p-3 rounded-3 border">
                         <div class="bg-white rounded-circle p-2 me-3 shadow-sm text-success">
                             <i class="bi bi-telephone fs-5"></i>
                         </div>
                         <div>
                             <span class="d-block text-muted small">Phone</span>
-                            <span class="text-dark fw-bold">${user.phone}</span>
+                            <span class="text-dark fw-bold"><%= u.getPhone() %></span>
                         </div>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-6">
-                <div class="glass-panel p-4 h-100 position-relative overflow-hidden">
+                <div class="glass-panel p-4 h-100 position-relative overflow-hidden shadow-sm border-0 transition-all hover-scale-slight">
                     <div class="position-absolute top-0 end-0 p-4 opacity-10">
                         <i class="bi bi-bank" style="font-size: 8rem;"></i>
                     </div>
@@ -78,15 +87,15 @@
                     </h6>
                     <div class="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3 position-relative z-1">
                         <span class="text-muted"><i class="bi bi-hash me-2"></i>Account Number</span>
-                        <span class="text-dark fw-bold">${account.accountNumber}</span>
+                        <span class="text-dark fw-bold fs-5"><%= acc.getAccountNumber() %></span>
                     </div>
                     <div class="mb-3 d-flex justify-content-between align-items-center border-bottom pb-3 position-relative z-1">
                         <span class="text-muted"><i class="bi bi-diagram-3 me-2"></i>Account Type</span>
-                        <span class="text-dark fw-bold">${account.accountType}</span>
+                        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2 rounded-pill fw-bold"><%= acc.getAccountType() %></span>
                     </div>
-                    <div class="mt-4 pt-2 position-relative z-1 bg-light p-3 rounded-4 border">
-                        <span class="d-block text-muted small fw-semibold mb-1">CURRENT BALANCE</span>
-                        <h3 class="text-success fw-bold mb-0">₹${account.balance}</h3>
+                    <div class="mt-4 pt-2 position-relative z-1 bg-gradient-primary-light p-3 rounded-4 border border-primary border-opacity-25 shadow-sm">
+                        <span class="d-block text-primary text-opacity-75 small fw-bold mb-1">CURRENT BALANCE</span>
+                        <h3 class="text-primary fw-bold mb-0">₹<%= acc.getBalance() %></h3>
                     </div>
                 </div>
             </div>
@@ -98,7 +107,7 @@
                     <h6 class="text-dark fw-bold mb-3 d-flex align-items-center">
                         <i class="bi bi-funnel text-primary me-2"></i> Filter Transactions
                     </h6>
-                    <form action="${pageContext.request.contextPath}/statement" method="get">
+                    <form action="<%= request.getContextPath() %>/statement" method="get">
                         <div class="row g-3 align-items-end">
                             <div class="col-md-3">
                                 <label class="form-label text-muted small fw-semibold ms-1">STATEMENT TYPE</label>

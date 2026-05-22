@@ -26,14 +26,14 @@
         <jsp:include page="WEB-INF/components/alerts.jsp" />
 
         <div class="glass-panel p-4 animate-fade-up">
-            <div class="table-responsive">
-                <table class="premium-table">
-                    <thead>
+            <div class="table-responsive px-2 pb-2">
+                <table class="table table-hover align-middle mb-0 premium-table" style="border-spacing: 0 12px; border-collapse: separate;">
+                    <thead class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
                         <tr>
-                            <th>Date & Time</th>
-                            <th>Transaction Type</th>
-                            <th>Amount</th>
-                            <th>Details</th>
+                            <th class="border-0 ps-4">Date & Time</th>
+                            <th class="border-0">Transaction Type</th>
+                            <th class="border-0">Amount</th>
+                            <th class="border-0">Details</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -63,26 +63,34 @@
                                         amountColor = "text-success"; amountPrefix = "+ ";
                                     }
                         %>
-                        <tr>
-                            <td>
+                        <tr class="bg-white shadow-sm rounded-4 transition-all hover-scale-slight" style="transform: scale(1); cursor: pointer;">
+                            <td class="ps-4 rounded-start border-0 py-3">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-light rounded p-2 me-3 d-flex shadow-sm border border-white">
+                                    <div class="bg-light rounded p-2 me-3 d-flex border">
                                         <i class="bi bi-calendar-event text-secondary fs-6"></i>
                                     </div>
                                     <span class="fw-semibold text-secondary"><%= txn.get("timestamp") %></span>
                                 </div>
                             </td>
-                            <td>
-                                <span class="badge rounded-pill bg-white shadow-sm border px-3 py-2 text-dark d-inline-flex align-items-center">
+                            <td class="border-0 py-3">
+                                <span class="badge rounded-pill bg-light border px-3 py-2 text-dark d-inline-flex align-items-center shadow-sm">
                                     <i class="bi <%= typeIcon %> <%= typeColor %> me-2 fs-6"></i> <%= type %>
                                 </span>
                             </td>
-                            <td class="fw-bold <%= amountColor %> fs-5"><%= amountPrefix %>₹<%= txn.get("amount") %></td>
-                            <td class="fw-medium text-secondary d-flex align-items-center">
-                                <% if (!"-".equals(counterparty)) { %>
-                                    <i class="bi bi-person-circle me-2 text-muted fs-5"></i>
-                                <% } %>
-                                <%= counterparty %>
+                            <td class="fw-bold <%= amountColor %> fs-5 border-0 py-3"><%= amountPrefix %>₹<%= txn.get("amount") %></td>
+                            <td class="fw-medium text-secondary border-0 rounded-end py-3">
+                                <div class="d-flex align-items-center">
+                                    <% if (!"-".equals(counterparty)) { %>
+                                        <div class="bg-light rounded-circle p-1 me-2 border text-center" style="width: 32px; height: 32px;">
+                                            <i class="bi bi-person-fill text-muted"></i>
+                                        </div>
+                                    <% } else { %>
+                                        <div class="bg-light rounded-circle p-1 me-2 border text-center" style="width: 32px; height: 32px;">
+                                            <i class="bi bi-building text-muted"></i>
+                                        </div>
+                                    <% } %>
+                                    <%= counterparty %>
+                                </div>
                             </td>
                         </tr>
                         <%      }
