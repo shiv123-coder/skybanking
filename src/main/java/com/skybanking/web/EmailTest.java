@@ -3,9 +3,8 @@ package com.skybanking.web;
 import io.github.cdimascio.dotenv.Dotenv;
 
 /**
- * Quick standalone test to verify SMTP email sending.
- * Run: mvn compile exec:java -Dexec.mainClass="com.skybanking.web.EmailTest"
- * Or simply run this class directly with the classpath.
+ * Quick standalone test to verify email sending.
+ * Run: mvn compile then use classpath to run this main class.
  */
 public class EmailTest {
 
@@ -23,25 +22,39 @@ public class EmailTest {
             System.out.println("⚠️  Could not load .env file: " + e.getMessage());
         }
 
+        // Check provider
+        String provider = getEnv("EMAIL_PROVIDER", dotenv);
+        if (provider == null) provider = "smtp";
+        System.out.println("EMAIL_PROVIDER: " + provider);
+
         // Check SMTP config
         String smtpEmail = getEnv("SMTP_EMAIL", dotenv);
-        String smtpPassword = getEnv("SMTP_PASSWORD", dotenv);
-        String smtpHost = getEnv("SMTP_HOST", dotenv);
-        String smtpPort = getEnv("SMTP_PORT", dotenv);
+        System.out.println("SMTP_EMAIL:     " + (smtpEmail != null ? smtpEmail : "NOT SET"));
 
-        System.out.println("SMTP_EMAIL:    " + (smtpEmail != null ? smtpEmail : "NOT SET"));
-        System.out.println("SMTP_PASSWORD: " + (smtpPassword != null ? maskPassword(smtpPassword) : "NOT SET"));
-        System.out.println("SMTP_HOST:     " + (smtpHost != null ? smtpHost : "NOT SET (default: smtp.gmail.com)"));
-        System.out.println("SMTP_PORT:     " + (smtpPort != null ? smtpPort : "NOT SET (default: 587)"));
+        if ("brevo".equalsIgnoreCase(provider)) {
+            String brevoKey = getEnv("BREVO_API_KEY", dotenv);
+            System.out.println("BREVO_API_KEY:  " + (brevoKey != null ? maskPassword(brevoKey) : "NOT SET"));
+        } else {
+            String smtpPassword = getEnv("SMTP_PASSWORD", dotenv);
+            String smtpHost = getEnv("SMTP_HOST", dotenv);
+            String smtpPort = getEnv("SMTP_PORT", dotenv);
+            System.out.println("SMTP_PASSWORD:  " + (smtpPassword != null ? maskPassword(smtpPassword) : "NOT SET"));
+            System.out.println("SMTP_HOST:      " + (smtpHost != null ? smtpHost : "NOT SET (default: smtp.gmail.com)"));
+            System.out.println("SMTP_PORT:      " + (smtpPort != null ? smtpPort : "NOT SET (default: 587)"));
+        }
         System.out.println("----------------------------------------");
 
-        if (smtpEmail == null || smtpPassword == null) {
-            System.out.println("❌ SMTP credentials are missing! Cannot send test email.");
-            System.out.println("   Set SMTP_EMAIL and SMTP_PASSWORD in .env or environment variables.");
+        if (smtpEmail == null) {
+            System.out.println("❌ SMTP_EMAIL is missing! Cannot send test email.");
             System.exit(1);
         }
 
-        // Try sending a test OTP
+        // Check if configured
+        System.out.println("isConfigured(): " + EmailUtil.isConfigured());
+        System.out.println("getProvider():  " + EmailUtil.getProvider());
+        System.out.println("----------------------------------------");
+
+        // Send test OTP
         System.out.println("📧 Sending test OTP email to: " + smtpEmail);
         int testOtp = 123456;
 
