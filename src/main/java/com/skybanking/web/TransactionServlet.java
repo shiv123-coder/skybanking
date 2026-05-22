@@ -91,6 +91,7 @@ public class TransactionServlet extends BaseServlet {
                 psTxn.executeUpdate();
 
                 con.commit();
+                createUserNotification(con, userId, "SUCCESS", "Deposit of ₹" + amount + " successful.");
                 req.setAttribute("message", "Deposit successful: ₹" + amount);
                 req.getRequestDispatcher("dashboard.jsp").forward(req, resp);
             } catch (Exception e) { con.rollback(); throw e; }
@@ -148,6 +149,7 @@ public class TransactionServlet extends BaseServlet {
                 psTxn.executeUpdate();
 
                 con.commit();
+                createUserNotification(con, userId, "SUCCESS", "Withdrawal of ₹" + amount + " successful.");
                 req.setAttribute("message", "Withdrawal successful: ₹" + amount);
                 req.getRequestDispatcher("dashboard.jsp").forward(req, resp);
             } catch (Exception e) { con.rollback(); throw e; }
@@ -228,9 +230,31 @@ public class TransactionServlet extends BaseServlet {
                 psTxn.executeUpdate();
 
                 con.commit();
+                
+                // Add Notification
+                createUserNotification(con, userId, "SUCCESS", "Transfer of ₹" + amount + " to account " + receiverAccountId + " successful.");
+                try {
+                    PreparedStatement psUser = con.prepareStatement("SELECT user_id FROM accounts WHERE account_id=?");
+                    psUser.setInt(1, receiverAccountId);
+                    ResultSet rsUser = psUser.executeQuery();
+                    if (rsUser.next()) {
+                        int receiverUserId = rsUser.getInt("user_id");
+                        createUserNotification(con, receiverUserId, "SUCCESS", "You received ₹" + amount + " from account " + senderAccountId + ".");
+                    }
+                } catch (Exception ignored) {}
+
                 req.setAttribute("message", "Transfer successful: ₹" + amount + " to account " + receiverAccountId);
                 req.getRequestDispatcher("dashboard.jsp").forward(req, resp);
             } catch (Exception e) { con.rollback(); throw e; }
         }
+    }
+
+    private void createUserNotification(Connection con, int userId, String type, String message) {
+        try (PreparedStatement ps = con.prepareStatement("INSERT INTO notifications (user_id, title, message, type) VALUES (?, 'Transaction Alert', ?, ?)")) {
+            ps.setInt(1, userId);
+            ps.setString(2, message);
+            ps.setString(3, type);
+            ps.executeUpdate();
+        } catch (Exception ignored) {}
     }
 }

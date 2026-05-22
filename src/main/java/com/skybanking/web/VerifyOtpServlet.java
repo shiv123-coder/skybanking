@@ -168,6 +168,26 @@ public class VerifyOtpServlet extends HttpServlet {
                 }
             }
 
+            // --- Notifications ---
+            // 1. Admin Notification
+            try (PreparedStatement adminNotif = con.prepareStatement(
+                    "INSERT INTO notifications (title, message, type) VALUES (?, ?, ?)")) {
+                adminNotif.setString(1, "New User Registration");
+                adminNotif.setString(2, "User " + fullname + " (" + username + ") has created an account.");
+                adminNotif.setString(3, "SUCCESS");
+                adminNotif.executeUpdate();
+            }
+
+            // 2. User Notification (Welcome message)
+            try (PreparedStatement userNotif = con.prepareStatement(
+                    "INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, ?)")) {
+                userNotif.setInt(1, userId);
+                userNotif.setString(2, "Welcome to SkyBanking");
+                userNotif.setString(3, "Hi " + fullname + ", your account has been created successfully. Welcome aboard!");
+                userNotif.setString(4, "INFO");
+                userNotif.executeUpdate();
+            }
+
             con.commit();
 
             // ✅ Clear OTP Pending after success

@@ -100,7 +100,7 @@ public class AdminLoansServlet extends HttpServlet {
 			resp.sendError(500, "Failed to update loan: " + e.getMessage());
 			return;
 		}
-		resp.sendRedirect("/BankingWebApp/admin/loans");
+		resp.sendRedirect(req.getContextPath() + "/admin/loans");
 	}
 
 	private void createNotification(Connection con, int loanId, String type, String message, String category) {
