@@ -51,3 +51,28 @@
 </head>
 <body>
     <jsp:include page="/WEB-INF/components/preloader.jsp" />
+
+    <% boolean isLoggedIn = session != null && session.getAttribute("user_id") != null; %>
+    <!-- Global Toggles (Fixed Top Right) -->
+    <div class="position-fixed top-0 end-0 p-4 z-3 d-flex gap-2 align-items-center mt-2 me-2" style="pointer-events: auto;">
+        <% if (isLoggedIn) { %>
+        <!-- Notifications Toggle -->
+        <button class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel position-relative d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" data-bs-toggle="offcanvas" data-bs-target="#notificationsOffcanvas" title="Notifications">
+            <i class="bi bi-bell fs-5 text-dark"></i>
+            <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">0</span>
+        </button>
+        <% } %>
+        
+        <!-- Preloader Toggle -->
+        <button id="preloader-toggle" class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Toggle Preloader Animation">
+            <i class="bi bi-lightning-charge fs-5 text-success" id="preloader-icon"></i>
+        </button>
+        
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="btn btn-link p-0 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center shadow-sm" style="width: 42px; height: 42px; background: var(--glass-bg);" title="Switch to Dark/Light Mode">
+            <div class="theme-icon-wrapper position-relative" style="width: 20px; height: 20px;">
+                <i class="bi bi-sun-fill position-absolute start-50 top-50 translate-middle fs-5 text-warning theme-sun" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(-90deg) scale(0);"></i>
+                <i class="bi bi-moon-stars-fill position-absolute start-50 top-50 translate-middle fs-5 text-primary theme-moon" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(90deg) scale(0);"></i>
+            </div>
+        </button>
+    </div>
