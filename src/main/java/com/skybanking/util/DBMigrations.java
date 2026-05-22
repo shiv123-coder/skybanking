@@ -21,6 +21,13 @@ public class DBMigrations {
 				"  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP\n" +
 				")");
 
+			// Add admin_reason if not exists (for existing DBs)
+			try {
+				st.executeUpdate("ALTER TABLE loans ADD COLUMN IF NOT EXISTS admin_reason TEXT");
+			} catch (SQLException e) {
+				System.err.println("Column admin_reason might already exist or DB doesn't support IF NOT EXISTS: " + e.getMessage());
+			}
+
 			st.executeUpdate("CREATE TABLE IF NOT EXISTS loan_repayments (\n" +
 				"  repayment_id SERIAL PRIMARY KEY,\n" +
 				"  loan_id INT NOT NULL,\n" +

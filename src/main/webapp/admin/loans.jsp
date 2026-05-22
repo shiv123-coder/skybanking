@@ -51,21 +51,16 @@
             <td>₹<%= l.get("emi") %></td>
             <td><span class="badge bg-info"><%= l.get("status") %></span></td>
             <td>
-                <form action="loans" method="post" class="d-inline">
-                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
-                    <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
-                    <button name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
-                </form>
-                <form action="loans" method="post" class="d-inline">
-                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
-                    <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
-                    <button name="action" value="reject" class="btn btn-warning btn-sm">Reject</button>
-                </form>
-                <form action="loans" method="post" class="d-inline">
-                    <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
-                    <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
-                    <button name="action" value="disburse" class="btn btn-primary btn-sm">Disburse</button>
-                </form>
+                <% if ("PENDING".equals(l.get("status"))) { %>
+                    <button type="button" class="btn btn-success btn-sm" onclick="openReasonModal(<%= l.get("loan_id") %>, 'approve')">Approve</button>
+                    <button type="button" class="btn btn-warning btn-sm" onclick="openReasonModal(<%= l.get("loan_id") %>, 'reject')">Reject</button>
+                <% } else if ("APPROVED".equals(l.get("status"))) { %>
+                    <form action="loans" method="post" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
+                        <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
+                        <button name="action" value="disburse" class="btn btn-primary btn-sm">Disburse</button>
+                    </form>
+                <% } %>
             </td>
         </tr>
         <%
@@ -74,6 +69,56 @@
         </tbody>
     </table>
     <a href="dashboard" class="btn btn-secondary">Back</a>
+
+    <!-- Reason Modal -->
+    <div class="modal fade" id="reasonModal" tabindex="-1" aria-labelledby="reasonModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form id="reasonForm" action="loans" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reasonModalLabel">Provide Reason</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
+                        <input type="hidden" name="loan_id" id="modalLoanId">
+                        <input type="hidden" name="action" id="modalAction">
+                        <div class="mb-3">
+                            <label for="admin_reason" class="form-label">Admin Remarks / Reason</label>
+                            <textarea class="form-control" id="admin_reason" name="admin_reason" rows="3" required placeholder="E.g., Approved based on high credit score."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="modalSubmitBtn">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const reasonModal = new bootstrap.Modal(document.getElementById('reasonModal'));
+        function openReasonModal(loanId, action) {
+            document.getElementById('modalLoanId').value = loanId;
+            document.getElementById('modalAction').value = action;
+            
+            const title = document.getElementById('reasonModalLabel');
+            const btn = document.getElementById('modalSubmitBtn');
+            if (action === 'approve') {
+                title.textContent = 'Approve Loan Application';
+                btn.textContent = 'Approve Loan';
+                btn.className = 'btn btn-success';
+            } else {
+                title.textContent = 'Reject Loan Application';
+                btn.textContent = 'Reject Loan';
+                btn.className = 'btn btn-danger';
+            }
+            
+            reasonModal.show();
+        }
+    </script>
 </body>
 </html>
 

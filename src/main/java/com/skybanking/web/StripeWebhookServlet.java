@@ -84,8 +84,8 @@ public class StripeWebhookServlet extends HttpServlet {
             // Amount comes in cents
             BigDecimal amount = new BigDecimal(session.getAmountTotal()).divide(new BigDecimal("100"));
             
-            // The Stripe Event ID is globally unique and guarantees we process this exactly once
-            String idempotencyKey = "STRIPE_" + eventId;
+            // Use Session ID for idempotency to ensure both webhook and success page redirects cannot double-credit
+            String idempotencyKey = "STRIPE_SESSION_" + session.getId();
 
             try (Connection con = DBConnection.getConnection()) {
                 con.setAutoCommit(false);

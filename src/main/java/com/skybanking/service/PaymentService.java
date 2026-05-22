@@ -33,7 +33,7 @@ public class PaymentService {
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
-                .setSuccessUrl(baseUrl + "/payment-success.jsp")
+                .setSuccessUrl(baseUrl + "/payment-success?session_id={CHECKOUT_SESSION_ID}")
                 .setCancelUrl(baseUrl + "/payment-cancel.jsp")
                 // Store internal identifiers in client_reference_id and metadata
                 .setClientReferenceId("USER_" + userId)

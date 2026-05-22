@@ -30,7 +30,12 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">Sky Banking Admin</a>
-            <div class="navbar-nav ms-auto">
+            <div class="navbar-nav ms-auto align-items-center">
+                <!-- Admin Notifications Toggle -->
+                <a class="nav-link position-relative me-3" href="#" data-bs-toggle="offcanvas" data-bs-target="#adminNotifOffcanvas">
+                    <i class="bi bi-bell-fill fs-5"></i>
+                    <span id="admin-notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">0</span>
+                </a>
                 <a class="nav-link" href="logout">Logout</a>
             </div>
         </div>
@@ -361,6 +366,110 @@
         function exportDashboard() {
             // Export dashboard data as PDF
             window.location.href = 'dashboard?action=export';
+        }
+    </script>
+
+    <!-- Admin Notifications Offcanvas -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="adminNotifOffcanvas" aria-labelledby="adminNotifOffcanvasLabel">
+        <div class="offcanvas-header bg-dark text-white">
+            <h5 class="offcanvas-title" id="adminNotifOffcanvasLabel"><i class="bi bi-bell-fill me-2"></i>Admin Alerts</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body p-0">
+            <div class="d-flex justify-content-between align-items-center p-3 border-bottom bg-light">
+                <span class="text-muted small fw-bold text-uppercase">Recent Alerts</span>
+                <button class="btn btn-sm btn-outline-secondary" onclick="markAllAdminNotificationsRead()"><i class="bi bi-check2-all me-1"></i>Mark All Read</button>
+            </div>
+            <div id="admin-notifications-list" class="list-group list-group-flush">
+                <div class="p-4 text-center text-muted">
+                    <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+                    <div>Loading alerts...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Admin Notifications Logic
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchAdminNotifications();
+            setInterval(fetchAdminNotifications, 60000);
+        });
+
+        function fetchAdminNotifications() {
+            fetch('<%= request.getContextPath() %>/api/notifications')
+                .then(res => {
+                    if (!res.ok) throw new Error("Not authorized");
+                    return res.json();
+                })
+                .then(data => {
+                    const badge = document.getElementById('admin-notif-badge');
+                    const list = document.getElementById('admin-notifications-list');
+                    
+                    if (data.length > 0) {
+                        badge.textContent = data.length;
+                        badge.classList.remove('d-none');
+                    } else {
+                        badge.classList.add('d-none');
+                    }
+                    
+                    if (data.length === 0) {
+                        list.innerHTML = `
+                            <div class="p-5 text-center text-muted">
+                                <i class="bi bi-bell-slash fs-1 d-block mb-3 opacity-50"></i>
+                                <h6 class="fw-bold">No new alerts</h6>
+                                <small>System is quiet!</small>
+                            </div>
+                        `;
+                        return;
+                    }
+                    
+                    list.innerHTML = '';
+                    data.forEach(n => {
+                        let iconClass = 'bi-info-circle text-primary bg-primary bg-opacity-10';
+                        if (n.type === 'SUCCESS') iconClass = 'bi-check-circle text-success bg-success bg-opacity-10';
+                        if (n.type === 'WARNING') iconClass = 'bi-exclamation-triangle text-warning bg-warning bg-opacity-10';
+                        if (n.type === 'ERROR') iconClass = 'bi-x-circle text-danger bg-danger bg-opacity-10';
+
+                        list.innerHTML += `
+                            <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 border-bottom transition-all" onclick="markAdminNotificationRead(${n.id})">
+                                <div class="d-flex w-100">
+                                    <div class="rounded-circle p-2 d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px;">
+                                        <i class="bi ${iconClass} fs-5"></i>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex w-100 justify-content-between align-items-center mb-1">
+                                            <h6 class="mb-0 fw-bold text-dark text-truncate" style="max-width:180px;">${n.title}</h6>
+                                            <small class="text-muted" style="font-size:0.7rem;">${n.created_at}</small>
+                                        </div>
+                                        <p class="mb-0 text-secondary small lh-sm">${n.message}</p>
+                                    </div>
+                                </div>
+                            </a>
+                        `;
+                    });
+                })
+                .catch(err => console.error("Failed to load admin notifications", err));
+        }
+
+        function markAdminNotificationRead(id) {
+            fetch('<%= request.getContextPath() %>/api/notifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'action=mark_read&id=' + id
+            }).then(() => fetchAdminNotifications());
+        }
+
+        function markAllAdminNotificationsRead() {
+            fetch('<%= request.getContextPath() %>/api/notifications', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'action=mark_read'
+            }).then(() => {
+                fetchAdminNotifications();
+                const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('adminNotifOffcanvas'));
+                if(offcanvas) offcanvas.hide();
+            });
         }
     </script>
 </body>

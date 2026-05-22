@@ -53,17 +53,24 @@ public class AdminLoansServlet extends HttpServlet {
 			return;
 		}
 		int loanId = Integer.parseInt(loanIdStr);
+		String adminReason = req.getParameter("admin_reason");
 		try (Connection con = DBConnection.getConnection()) {
 			if ("approve".equals(action)) {
-				try (PreparedStatement ps = con.prepareStatement("UPDATE loans SET status='APPROVED' WHERE loan_id=?")) {
-					ps.setInt(1, loanId);
+				try (PreparedStatement ps = con.prepareStatement("UPDATE loans SET status='APPROVED', admin_reason=? WHERE loan_id=?")) {
+					ps.setString(1, adminReason != null ? adminReason : "Approved by Admin.");
+					ps.setInt(2, loanId);
 					ps.executeUpdate();
 				}
+				// Create notification
+				createNotification(con, loanId, "SUCCESS", "Your loan application #" + loanId + " has been approved.", "loan");
 			} else if ("reject".equals(action)) {
-				try (PreparedStatement ps = con.prepareStatement("UPDATE loans SET status='REJECTED' WHERE loan_id=?")) {
-					ps.setInt(1, loanId);
+				try (PreparedStatement ps = con.prepareStatement("UPDATE loans SET status='REJECTED', admin_reason=? WHERE loan_id=?")) {
+					ps.setString(1, adminReason != null ? adminReason : "Rejected by Admin.");
+					ps.setInt(2, loanId);
 					ps.executeUpdate();
 				}
+				// Create notification
+				createNotification(con, loanId, "ERROR", "Your loan application #" + loanId + " has been rejected.", "loan");
 			} else if ("disburse".equals(action)) {
 				// Mark as disbursed and credit to user's account
 				con.setAutoCommit(false);
@@ -92,6 +99,26 @@ public class AdminLoansServlet extends HttpServlet {
 			return;
 		}
 		resp.sendRedirect("/BankingWebApp/admin/loans");
+	}
+
+	private void createNotification(Connection con, int loanId, String type, String message, String category) {
+		try (PreparedStatement ps1 = con.prepareStatement("SELECT user_id FROM loans WHERE loan_id=?")) {
+			ps1.setInt(1, loanId);
+			try (ResultSet rs = ps1.executeQuery()) {
+				if (rs.next()) {
+					int userId = rs.getInt(1);
+					try (PreparedStatement ps2 = con.prepareStatement("INSERT INTO notifications (user_id, title, message, type) VALUES (?, ?, ?, ?)")) {
+						ps2.setInt(1, userId);
+						ps2.setString(2, "Loan Update");
+						ps2.setString(3, message);
+						ps2.setString(4, type);
+						ps2.executeUpdate();
+					}
+				}
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
 
