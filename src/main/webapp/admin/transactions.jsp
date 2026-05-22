@@ -93,7 +93,7 @@
             %>
                 <div class="row mb-4">
                     <div class="col-md-3">
-                        <div class="card border-left-primary hover-scale-slight">
+                        <div class="card border-left-primary">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -106,7 +106,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card border-left-success hover-scale-slight">
+                        <div class="card border-left-success">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -119,7 +119,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card border-left-info hover-scale-slight">
+                        <div class="card border-left-info">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -132,7 +132,7 @@
                         </div>
                     </div>
                     <div class="col-md-3">
-                        <div class="card border-left-warning hover-scale-slight">
+                        <div class="card border-left-warning">
                             <div class="card-body">
                                 <div class="row align-items-center">
                                     <div class="col">
@@ -148,47 +148,42 @@
             <% } %>
 
             <!-- Search & Filter -->
-            <div class="card border-0 shadow-sm mb-4">
-                <div class="card-body">
-                    <form method="post" action="transactions" class="mb-0">
-                        <input type="hidden" name="action" value="search">
-                        <div class="row g-3">
-                            <div class="col-md-3">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
-                                    <input type="text" class="form-control border-start-0 ps-0" name="search" placeholder="Search by reference, user"
-                                           value="<%= request.getAttribute("search") != null ? request.getAttribute("search") : "" %>">
-                                </div>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="type" class="form-select">
-                                    <option value="">All Types</option>
-                                    <option value="DEPOSIT" <%= "DEPOSIT".equals(request.getAttribute("type")) ? "selected" : "" %>>Deposit</option>
-                                    <option value="WITHDRAWAL" <%= "WITHDRAWAL".equals(request.getAttribute("type")) ? "selected" : "" %>>Withdrawal</option>
-                                    <option value="TRANSFER" <%= "TRANSFER".equals(request.getAttribute("type")) ? "selected" : "" %>>Transfer</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <select name="status" class="form-select">
-                                    <option value="">All Status</option>
-                                    <option value="COMPLETED" <%= "COMPLETED".equals(request.getAttribute("status")) ? "selected" : "" %>>Completed</option>
-                                    <option value="PENDING" <%= "PENDING".equals(request.getAttribute("status")) ? "selected" : "" %>>Pending</option>
-                                    <option value="FAILED" <%= "FAILED".equals(request.getAttribute("status")) ? "selected" : "" %>>Failed</option>
-                                    <option value="FLAGGED" <%= "FLAGGED".equals(request.getAttribute("status")) ? "selected" : "" %>>Flagged</option>
-                                </select>
-                            </div>
-                            <div class="col-md-2">
-                                <input type="date" class="form-control" name="dateFrom" value="<%= request.getAttribute("dateFrom") != null ? request.getAttribute("dateFrom") : "" %>" title="From Date">
-                            </div>
-                            <div class="col-md-2">
-                                <input type="date" class="form-control" name="dateTo" value="<%= request.getAttribute("dateTo") != null ? request.getAttribute("dateTo") : "" %>" title="To Date">
-                            </div>
-                            <div class="col-md-1">
-                                <button type="submit" class="btn btn-primary w-100 shadow-sm"><i class="fas fa-search"></i></button>
-                            </div>
+            <div class="search-filter-container mb-3">
+                <form method="post" action="transactions">
+                    <input type="hidden" name="action" value="search">
+                    <div class="row g-2">
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" name="search" placeholder="Search by reference, user name"
+                                   value="<%= request.getAttribute("search") != null ? request.getAttribute("search") : "" %>">
                         </div>
-                    </form>
-                </div>
+                        <div class="col-md-2">
+                            <select name="type" class="form-select">
+                                <option value="">All Types</option>
+                                <option value="DEPOSIT" <%= "DEPOSIT".equals(request.getAttribute("type")) ? "selected" : "" %>>Deposit</option>
+                                <option value="WITHDRAWAL" <%= "WITHDRAWAL".equals(request.getAttribute("type")) ? "selected" : "" %>>Withdrawal</option>
+                                <option value="TRANSFER" <%= "TRANSFER".equals(request.getAttribute("type")) ? "selected" : "" %>>Transfer</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <select name="status" class="form-select">
+                                <option value="">All Status</option>
+                                <option value="COMPLETED" <%= "COMPLETED".equals(request.getAttribute("status")) ? "selected" : "" %>>Completed</option>
+                                <option value="PENDING" <%= "PENDING".equals(request.getAttribute("status")) ? "selected" : "" %>>Pending</option>
+                                <option value="FAILED" <%= "FAILED".equals(request.getAttribute("status")) ? "selected" : "" %>>Failed</option>
+                                <option value="FLAGGED" <%= "FLAGGED".equals(request.getAttribute("status")) ? "selected" : "" %>>Flagged</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" name="dateFrom" value="<%= request.getAttribute("dateFrom") != null ? request.getAttribute("dateFrom") : "" %>">
+                        </div>
+                        <div class="col-md-2">
+                            <input type="date" class="form-control" name="dateTo" value="<%= request.getAttribute("dateTo") != null ? request.getAttribute("dateTo") : "" %>">
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+                </form>
             </div>
 
             <!-- Transactions Table -->
@@ -202,51 +197,51 @@
                 </div>
                 <div class="card-body">
                     <% if (transactions != null && !transactions.isEmpty()) { %>
-                        <div class="table-responsive px-2 pb-2">
-                            <table class="table table-hover align-middle mb-0 premium-table" style="border-spacing: 0 10px;">
-                                <thead class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
                                     <tr>
-                                        <th class="border-0 ps-3">ID</th>
-                                        <th class="border-0">Type</th>
-                                        <th class="border-0 text-end">Amount</th>
-                                        <th class="border-0 text-end">Tax</th>
-                                        <th class="border-0 text-end">Total</th>
-                                        <th class="border-0">Date</th>
-                                        <th class="border-0 text-center">Status</th>
-                                        <th class="border-0">Reference</th>
-                                        <th class="border-0 text-center pe-3">Actions</th>
+                                        <th>ID</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                        <th>Tax</th>
+                                        <th>Total</th>
+                                        <th>Date</th>
+                                        <th>Status</th>
+                                        <th>Reference</th>
+                                        <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 <% for (Transaction txn : transactions) { %>
-                                    <tr class="bg-white shadow-sm rounded-3 hover-scale-slight">
-                                        <td class="border-0 ps-3 py-3 rounded-start fw-bold text-secondary">#<%= txn.getTxnId() %></td>
-                                        <td class="border-0 py-3">
-                                            <span class="badge <%= "DEPOSIT".equals(txn.getType()) ? "bg-success bg-opacity-10 text-success border border-success" : 
-                                                                     "WITHDRAWAL".equals(txn.getType()) ? "bg-danger bg-opacity-10 text-danger border border-danger" : "bg-info bg-opacity-10 text-info border border-info" %> px-2 py-1 rounded-pill">
+                                    <tr>
+                                        <td><%= txn.getTxnId() %></td>
+                                        <td>
+                                            <span class="badge bg-<%= "DEPOSIT".equals(txn.getType()) ? "success" : 
+                                                                     "WITHDRAWAL".equals(txn.getType()) ? "danger" : "info" %>">
                                                 <%= txn.getType() %>
                                             </span>
                                         </td>
-                                        <td class="border-0 py-3 text-end fw-bold">₹<%= txn.getAmount() %></td>
-                                        <td class="border-0 py-3 text-end text-muted small">₹<%= txn.getTaxAmount() != null ? txn.getTaxAmount() : "0.00" %></td>
-                                        <td class="border-0 py-3 text-end fw-bold text-primary">₹<%= txn.getTotalAmount() %></td>
-                                        <td class="border-0 py-3 text-muted small"><%= txn.getDate() %></td>
-                                        <td class="border-0 py-3 text-center">
-                                            <span class="badge <%= "COMPLETED".equals(txn.getStatus()) ? "bg-success bg-opacity-10 text-success border border-success" :
-                                                                     "FLAGGED".equals(txn.getStatus()) ? "bg-warning bg-opacity-10 text-warning border border-warning" :
-                                                                     "PENDING".equals(txn.getStatus()) ? "bg-info bg-opacity-10 text-info border border-info" : "bg-danger bg-opacity-10 text-danger border border-danger" %> px-3 py-2 rounded-pill">
+                                        <td>₹<%= txn.getAmount() %></td>
+                                        <td>₹<%= txn.getTaxAmount() != null ? txn.getTaxAmount() : "0.00" %></td>
+                                        <td>₹<%= txn.getTotalAmount() %></td>
+                                        <td><%= txn.getDate() %></td>
+                                        <td>
+                                            <span class="badge bg-<%= "COMPLETED".equals(txn.getStatus()) ? "success" :
+                                                                     "FLAGGED".equals(txn.getStatus()) ? "warning" :
+                                                                     "PENDING".equals(txn.getStatus()) ? "info" : "danger" %>">
                                                 <%= txn.getStatus() %>
                                             </span>
                                         </td>
-                                        <td class="border-0 py-3 text-muted small"><%= txn.getReferenceNumber() %></td>
-                                        <td class="border-0 py-3 rounded-end text-center pe-3">
-                                            <div class="d-flex justify-content-center gap-1">
-                                                <a href="transactions?action=view&txnId=<%= txn.getTxnId() %>" class="btn btn-sm btn-light text-info rounded-circle shadow-sm hover-scale-slight" title="View Details" style="width:32px;height:32px;padding:4px;"><i class="fas fa-eye"></i></a>
-                                                <a href="transactions?action=export&txnId=<%= txn.getTxnId() %>" class="btn btn-sm btn-light text-success rounded-circle shadow-sm hover-scale-slight" title="Export PDF" style="width:32px;height:32px;padding:4px;"><i class="fas fa-download"></i></a>
+                                        <td><small><%= txn.getReferenceNumber() %></small></td>
+                                        <td>
+                                            <div class="btn-group btn-group-sm">
+                                                <a href="transactions?action=view&txnId=<%= txn.getTxnId() %>" class="btn btn-outline-info" title="View Details"><i class="fas fa-eye"></i></a>
+                                                <a href="transactions?action=export&txnId=<%= txn.getTxnId() %>" class="btn btn-outline-success" title="Export PDF"><i class="fas fa-download"></i></a>
                                                 <% if ("FLAGGED".equals(txn.getStatus())) { %>
-                                                    <a href="transactions?action=unflag&txnId=<%= txn.getTxnId() %>" class="btn btn-sm btn-light text-success rounded-circle shadow-sm hover-scale-slight" title="Unflag" onclick="return confirm('Are you sure to unflag this transaction?')" style="width:32px;height:32px;padding:4px;"><i class="fas fa-flag"></i></a>
+                                                    <a href="transactions?action=unflag&txnId=<%= txn.getTxnId() %>" class="btn btn-outline-success" title="Unflag" onclick="return confirm('Are you sure to unflag this transaction?')"><i class="fas fa-flag"></i></a>
                                                 <% } else { %>
-                                                    <a href="transactions?action=flag&txnId=<%= txn.getTxnId() %>" class="btn btn-sm btn-light text-warning rounded-circle shadow-sm hover-scale-slight" title="Flag" onclick="return confirm('Are you sure to flag this transaction?')" style="width:32px;height:32px;padding:4px;"><i class="fas fa-flag"></i></a>
+                                                    <a href="transactions?action=flag&txnId=<%= txn.getTxnId() %>" class="btn btn-outline-warning" title="Flag" onclick="return confirm('Are you sure to flag this transaction?')"><i class="fas fa-flag"></i></a>
                                                 <% } %>
                                             </div>
                                         </td>
