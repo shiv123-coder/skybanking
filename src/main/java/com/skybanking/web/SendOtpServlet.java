@@ -157,7 +157,20 @@ public class SendOtpServlet extends HttpServlet {
                     displayName = sessionName.toString();
                 }
             }
-            EmailUtil.sendOtp(email, displayName, otp);
+            boolean emailSent = EmailUtil.sendOtp(email, displayName, otp);
+
+            if (!emailSent) {
+                logger.severe("Email sending failed for: " + email + " [Type=" + type + "]");
+                req.setAttribute("error", "Failed to send OTP email. Please check your email address or try again later.");
+                String page = switch (type) {
+                    case "signup" -> "signup.jsp";
+                    case "forgot" -> "forgotpassword.jsp";
+                    case "profile" -> "updateProfile.jsp";
+                    default -> "login.jsp";
+                };
+                req.getRequestDispatcher(page).forward(req, resp);
+                return;
+            }
 
             logger.info("OTP sent successfully to: " + email + " [Type=" + type + "]");
 

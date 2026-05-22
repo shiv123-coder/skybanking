@@ -9,7 +9,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 /**
  * Email utility for sending OTPs and notifications.
- * All credentials are loaded from environment variables.
+ * All credentials are loaded from environment variables (System env first, then .env file).
  *
  * Required env vars:
  *   SMTP_EMAIL    — sender email address
@@ -32,13 +32,37 @@ public class EmailUtil {
         }
     }
 
-    private static final String FROM_EMAIL = getEnvOrDefault("SMTP_EMAIL", "");
-    private static final String PASSWORD = getEnvOrDefault("SMTP_PASSWORD", "");
-    private static final String SMTP_HOST = getEnvOrDefault("SMTP_HOST", "smtp.gmail.com");
-    private static final String SMTP_PORT = getEnvOrDefault("SMTP_PORT", "587");
+    // Lazy-loaded SMTP config to ensure env vars from Render are available at runtime
+    private static String fromEmail;
+    private static String password;
+    private static String smtpHost;
+    private static String smtpPort;
+    private static boolean configLoaded = false;
 
     private EmailUtil() {
         // Utility class
+    }
+
+    /**
+     * Load SMTP configuration lazily (at first use, not at class load time).
+     * This ensures Render's environment variables are available when the servlet starts.
+     */
+    private static synchronized void loadConfig() {
+        if (configLoaded) return;
+
+        fromEmail = getEnvOrDefault("SMTP_EMAIL", "");
+        password = getEnvOrDefault("SMTP_PASSWORD", "");
+        smtpHost = getEnvOrDefault("SMTP_HOST", "smtp.gmail.com");
+        smtpPort = getEnvOrDefault("SMTP_PORT", "587");
+        configLoaded = true;
+
+        // Log configuration status at startup (mask sensitive data)
+        LOGGER.info("📧 EmailUtil config loaded:");
+        LOGGER.info("   SMTP_EMAIL:    " + (fromEmail.isEmpty() ? "❌ NOT SET" : fromEmail));
+        LOGGER.info("   SMTP_PASSWORD: " + (password.isEmpty() ? "❌ NOT SET" : "✅ SET (length=" + password.length() + ")"));
+        LOGGER.info("   SMTP_HOST:     " + smtpHost);
+        LOGGER.info("   SMTP_PORT:     " + smtpPort);
+        LOGGER.info("   ENV source:    " + (DOTENV != null ? ".env file available" : "System env only (Render/Docker)"));
     }
 
     /**
@@ -47,16 +71,23 @@ public class EmailUtil {
      * @param toEmail  recipient email address
      * @param username recipient's display name
      * @param otp      the one-time password to send
+     * @return true if email was sent successfully, false otherwise
      */
-    public static void sendOtp(String toEmail, String username, int otp) {
-        if (FROM_EMAIL.isEmpty() || PASSWORD.isEmpty()) {
-            LOGGER.severe("❌ SMTP credentials not configured. Set SMTP_EMAIL and SMTP_PASSWORD in .env or environment variables. Email will NOT be sent.");
-            return;
+    public static boolean sendOtp(String toEmail, String username, int otp) {
+        // Ensure config is loaded
+        loadConfig();
+
+        if (fromEmail.isEmpty() || password.isEmpty()) {
+            LOGGER.severe("❌ SMTP credentials not configured. Set SMTP_EMAIL and SMTP_PASSWORD in environment variables. Email will NOT be sent.");
+            LOGGER.severe("   Current env check — SMTP_EMAIL from System.getenv: " + (System.getenv("SMTP_EMAIL") != null ? "present" : "null"));
+            LOGGER.severe("   Current env check — SMTP_PASSWORD from System.getenv: " + (System.getenv("SMTP_PASSWORD") != null ? "present" : "null"));
+            LOGGER.severe("   Current env check — DOTENV loaded: " + (DOTENV != null));
+            return false;
         }
         
-        if (SMTP_HOST.isEmpty() || SMTP_PORT.isEmpty()) {
+        if (smtpHost.isEmpty() || smtpPort.isEmpty()) {
             LOGGER.severe("❌ SMTP_HOST or SMTP_PORT is empty. Cannot send email.");
-            return;
+            return false;
         }
 
         String displayName = (username != null && !username.trim().isEmpty()) ? username.trim() : "Valued Customer";
@@ -64,25 +95,32 @@ public class EmailUtil {
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-        props.put("mail.smtp.host", SMTP_HOST);
-        props.put("mail.smtp.port", SMTP_PORT);
+        props.put("mail.smtp.host", smtpHost);
+        props.put("mail.smtp.port", smtpPort);
         props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        // Also allow TLSv1.3 for newer environments (Render uses modern JDK)
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2 TLSv1.3");
 
         // ✅ Production Hardening: Set explicit timeouts to prevent thread blocks
-        props.put("mail.smtp.connectiontimeout", "5000"); // 5s connection timeout
-        props.put("mail.smtp.timeout", "5000");           // 5s read timeout
-        props.put("mail.smtp.writetimeout", "5000");      // 5s write timeout
+        // Increased from 5s to 10s for cloud environments (Render) where network latency is higher
+        props.put("mail.smtp.connectiontimeout", "10000"); // 10s connection timeout
+        props.put("mail.smtp.timeout", "10000");           // 10s read timeout
+        props.put("mail.smtp.writetimeout", "10000");      // 10s write timeout
+
+        // Enable SMTP debug logging when issues are suspected
+        boolean debug = "true".equalsIgnoreCase(getEnvOrDefault("SMTP_DEBUG", "false"));
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(FROM_EMAIL, PASSWORD);
+                return new PasswordAuthentication(fromEmail, password);
             }
         });
+        session.setDebug(debug);
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(FROM_EMAIL, "SkyBanking"));
+            message.setFrom(new InternetAddress(fromEmail, "SkyBanking"));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
             message.setSubject("Your SkyBanking OTP");
             message.setText("Hello " + displayName + ",\n\nYour OTP is: " + otp +
@@ -91,10 +129,40 @@ public class EmailUtil {
                     "Thank you,\nSkyBanking Team");
 
             Transport.send(message);
-            LOGGER.info("OTP sent successfully to " + maskEmail(toEmail));
+            LOGGER.info("✅ OTP sent successfully to " + maskEmail(toEmail));
+            return true;
+        } catch (AuthenticationFailedException e) {
+            LOGGER.log(Level.SEVERE, "❌ SMTP Authentication failed! Check SMTP_EMAIL and SMTP_PASSWORD. " +
+                    "For Gmail, use an App Password (not your regular password). " +
+                    "Email: " + fromEmail + ", Error: " + e.getMessage(), e);
+            return false;
+        } catch (MessagingException e) {
+            LOGGER.log(Level.SEVERE, "❌ Failed to send OTP email to " + maskEmail(toEmail) + 
+                    ". Host: " + smtpHost + ":" + smtpPort + 
+                    ". Error: " + e.getMessage(), e);
+            return false;
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Failed to send OTP email to " + maskEmail(toEmail), e);
+            LOGGER.log(Level.SEVERE, "❌ Unexpected error sending OTP email to " + maskEmail(toEmail), e);
+            return false;
         }
+    }
+
+    /**
+     * Force reload SMTP configuration from environment variables.
+     * Useful for testing or when env vars change at runtime.
+     */
+    public static synchronized void reloadConfig() {
+        configLoaded = false;
+        loadConfig();
+    }
+
+    /**
+     * Check if SMTP is properly configured.
+     * @return true if SMTP credentials are available
+     */
+    public static boolean isConfigured() {
+        loadConfig();
+        return !fromEmail.isEmpty() && !password.isEmpty();
     }
 
     /**
@@ -109,6 +177,7 @@ public class EmailUtil {
 
     /**
      * Get environment variable with fallback default.
+     * Checks System.getenv() first (for Render/Docker), then .env file (for local dev).
      */
     private static String getEnvOrDefault(String key, String defaultValue) {
         String value = System.getenv(key);

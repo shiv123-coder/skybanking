@@ -29,7 +29,13 @@ public class ResendOtpServlet extends HttpServlet {
         session.setAttribute("otpExpiry", System.currentTimeMillis() + (5 * 60 * 1000)); // 5 min
 
         // --- Send OTP ---
-        EmailUtil.sendOtp(email, username != null ? username : "User", otp);
+        boolean emailSent = EmailUtil.sendOtp(email, username != null ? username : "User", otp);
+
+        if (!emailSent) {
+            resp.setStatus(500);
+            resp.getWriter().write("Failed to send OTP email. Please try again later.");
+            return;
+        }
 
         if (isSignup) {
             // For signup flow, redirect to verify page

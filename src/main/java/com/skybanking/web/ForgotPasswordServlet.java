@@ -81,7 +81,12 @@ public class ForgotPasswordServlet extends BaseServlet {
         session.setAttribute("isOtpVerified", false);
 
         // Send OTP email
-        EmailUtil.sendOtp(email, (username != null && !username.trim().isEmpty()) ? username : "Valued Customer", otp);
+        boolean emailSent = EmailUtil.sendOtp(email, (username != null && !username.trim().isEmpty()) ? username : "Valued Customer", otp);
+
+        if (!emailSent) {
+            handleError(req, resp, "Failed to send OTP email. Please try again later.", "forgotpassword.jsp", null);
+            return;
+        }
 
         resp.sendRedirect("verifyotp.jsp?type=forgot");
     }

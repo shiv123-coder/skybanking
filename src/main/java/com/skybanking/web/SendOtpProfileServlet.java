@@ -45,7 +45,13 @@ public class SendOtpProfileServlet extends HttpServlet {
         session.setAttribute("otpExpiry", System.currentTimeMillis() + 5 * 60 * 1000); // 5 min expiry
 
         // Send OTP
-        EmailUtil.sendOtp(email, name, otp);
+        boolean emailSent = EmailUtil.sendOtp(email, name, otp);
+
+        if (!emailSent) {
+            req.setAttribute("error", "Failed to send OTP email. Please try again later.");
+            req.getRequestDispatcher("updateprofile.jsp").forward(req, resp);
+            return;
+        }
 
         // Redirect to verify page
         resp.sendRedirect("verifyotp.jsp?type=profile");
