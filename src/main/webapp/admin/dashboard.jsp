@@ -95,7 +95,7 @@
                 <!-- Statistics Cards -->
                 <div class="row mb-4">
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card border-left-primary shadow h-100 py-2 hover-scale-slight">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -111,7 +111,7 @@
                     </div>
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card border-left-success shadow h-100 py-2 hover-scale-slight">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -127,7 +127,7 @@
                     </div>
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card border-left-info shadow h-100 py-2 hover-scale-slight">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="col-xl-3 col-md-6 mb-4">
-                        <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card border-left-warning shadow h-100 py-2 hover-scale-slight">
                             <div class="card-body">
                                 <div class="row no-gutters align-items-center">
                                     <div class="col mr-2">
@@ -200,21 +200,21 @@
                                 <% if (recentActivities != null) { %>
                                     <% List<Map<String, Object>> recentRegistrations = (List<Map<String, Object>>) recentActivities.get("recentRegistrations"); %>
                                     <% if (recentRegistrations != null && !recentRegistrations.isEmpty()) { %>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm">
-                                                <thead>
+                                        <div class="table-responsive px-2 pb-2">
+                                            <table class="table table-hover align-middle mb-0 premium-table" style="border-spacing: 0 10px;">
+                                                <thead class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
                                                     <tr>
-                                                        <th>Name</th>
-                                                        <th>Username</th>
-                                                        <th>Date</th>
+                                                        <th class="border-0 ps-3">Name</th>
+                                                        <th class="border-0">Username</th>
+                                                        <th class="border-0">Date</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <% for (Map<String, Object> user : recentRegistrations) { %>
-                                                    <tr>
-                                                        <td><%= user.get("fullname") %></td>
-                                                        <td><%= user.get("username") %></td>
-                                                        <td><%= user.get("createdAt") %></td>
+                                                    <tr class="bg-white shadow-sm rounded-3 hover-scale-slight">
+                                                        <td class="border-0 ps-3 py-3 rounded-start"><div class="d-flex align-items-center"><div class="bg-light rounded-circle p-2 me-2 border text-center" style="width: 32px; height: 32px;"><i class="fas fa-user text-primary" style="font-size: 0.8rem;"></i></div><%= user.get("fullname") %></div></td>
+                                                        <td class="border-0 py-3"><span class="badge bg-light text-dark border px-2 py-1"><%= user.get("username") %></span></td>
+                                                        <td class="border-0 py-3 rounded-end text-muted small"><%= user.get("createdAt") %></td>
                                                     </tr>
                                                     <% } %>
                                                 </tbody>
@@ -237,23 +237,23 @@
                                 <% if (recentActivities != null) { %>
                                     <% List<Map<String, Object>> recentTransactions = (List<Map<String, Object>>) recentActivities.get("recentTransactions"); %>
                                     <% if (recentTransactions != null && !recentTransactions.isEmpty()) { %>
-                                        <div class="table-responsive">
-                                            <table class="table table-sm">
-                                                <thead>
+                                        <div class="table-responsive px-2 pb-2">
+                                            <table class="table table-hover align-middle mb-0 premium-table" style="border-spacing: 0 10px;">
+                                                <thead class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
                                                     <tr>
-                                                        <th>User</th>
-                                                        <th>Type</th>
-                                                        <th>Amount</th>
-                                                        <th>Date</th>
+                                                        <th class="border-0 ps-3">User</th>
+                                                        <th class="border-0">Type</th>
+                                                        <th class="border-0 text-end">Amount</th>
+                                                        <th class="border-0 text-end pe-3">Date</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     <% for (Map<String, Object> txn : recentTransactions) { %>
-                                                    <tr>
-                                                        <td><%= txn.get("userName") %></td>
-                                                        <td><%= txn.get("type") %></td>
-                                                        <td>₹<%= txn.get("amount") %></td>
-                                                        <td><%= txn.get("date") %></td>
+                                                    <tr class="bg-white shadow-sm rounded-3 hover-scale-slight">
+                                                        <td class="border-0 ps-3 py-3 rounded-start fw-medium"><%= txn.get("userName") %></td>
+                                                        <td class="border-0 py-3"><span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1 rounded-pill"><%= txn.get("type") %></span></td>
+                                                        <td class="border-0 py-3 text-end fw-bold">₹<%= txn.get("amount") %></td>
+                                                        <td class="border-0 py-3 rounded-end text-muted small text-end pe-3"><%= txn.get("date") %></td>
                                                     </tr>
                                                     <% } %>
                                                 </tbody>

@@ -104,29 +104,34 @@
                 <% } %>
 
                 <!-- Search & Filter -->
-                <div class="search-filter-container mb-3">
-                    <form method="post" action="users">
-                        <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
-                        <input type="hidden" name="action" value="search">
-                        <div class="row g-2">
-                            <div class="col-md-4">
-                                <input type="text" class="form-control" name="search" 
-                                       placeholder="Search by name, username, or email" 
-                                       value="<%= request.getAttribute("search") != null ? request.getAttribute("search") : "" %>">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <form method="post" action="users" class="mb-0">
+                            <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
+                            <input type="hidden" name="action" value="search">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-5">
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-white border-end-0"><i class="fas fa-search text-muted"></i></span>
+                                        <input type="text" class="form-control border-start-0 ps-0" name="search" 
+                                               placeholder="Search by name, username, or email" 
+                                               value="<%= request.getAttribute("search") != null ? request.getAttribute("search") : "" %>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <select name="status" class="form-select">
+                                        <option value="">All Status</option>
+                                        <option value="active" <%= "active".equals(request.getAttribute("status")) ? "selected" : "" %>>Active</option>
+                                        <option value="inactive" <%= "inactive".equals(request.getAttribute("status")) ? "selected" : "" %>>Inactive</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary px-4 fw-semibold shadow-sm">Search</button>
+                                    <a href="users" class="btn btn-outline-secondary px-4 fw-semibold ms-2">Clear</a>
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <select name="status" class="form-select">
-                                    <option value="">All Status</option>
-                                    <option value="active" <%= "active".equals(request.getAttribute("status")) ? "selected" : "" %>>Active</option>
-                                    <option value="inactive" <%= "inactive".equals(request.getAttribute("status")) ? "selected" : "" %>>Inactive</option>
-                                </select>
-                            </div>
-                            <div class="col-md-3">
-                                <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
-                                <a href="users" class="btn btn-outline-secondary">Clear</a>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Users Table -->
@@ -139,48 +144,55 @@
                     <div class="card-body">
                         <% List<User> users = (List<User>) request.getAttribute("users"); %>
                         <% if (users != null && !users.isEmpty()) { %>
-                            <div class="table-responsive">
-                                <table class="table table-striped table-hover align-middle">
-                                    <thead class="table-dark">
+                            <div class="table-responsive px-2 pb-2">
+                                <table class="table table-hover align-middle mb-0 premium-table" style="border-spacing: 0 10px;">
+                                    <thead class="text-muted small fw-bold text-uppercase" style="letter-spacing: 0.5px;">
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Full Name</th>
-                                            <th>Username</th>
-                                            <th>Email</th>
-                                            <th>Phone</th>
-                                            <th>Status</th>
-                                            <th>Created</th>
-                                            <th>Last Login</th>
-                                            <th>Actions</th>
+                                            <th class="border-0 ps-3">ID</th>
+                                            <th class="border-0">Full Name</th>
+                                            <th class="border-0">Username</th>
+                                            <th class="border-0">Email</th>
+                                            <th class="border-0">Phone</th>
+                                            <th class="border-0 text-center">Status</th>
+                                            <th class="border-0">Created</th>
+                                            <th class="border-0">Last Login</th>
+                                            <th class="border-0 text-center pe-3">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <% for (User user : users) { %>
-                                            <tr>
-                                                <td><%= user.getId() %></td>
-                                                <td><%= user.getFullname() %></td>
-                                                <td><%= user.getUsername() %></td>
-                                                <td><%= user.getEmail() %></td>
-                                                <td><%= user.getPhone() %></td>
-                                                <td>
-                                                    <span class="badge bg-<%= user.isActive() ? "success" : "danger" %>">
+                                            <tr class="bg-white shadow-sm rounded-3 hover-scale-slight">
+                                                <td class="border-0 ps-3 py-3 rounded-start fw-bold text-secondary">#<%= user.getId() %></td>
+                                                <td class="border-0 py-3 fw-medium">
+                                                    <div class="d-flex align-items-center">
+                                                        <div class="bg-light rounded-circle p-2 me-2 border text-center" style="width: 32px; height: 32px;">
+                                                            <i class="fas fa-user text-primary" style="font-size: 0.8rem;"></i>
+                                                        </div>
+                                                        <%= user.getFullname() %>
+                                                    </div>
+                                                </td>
+                                                <td class="border-0 py-3"><span class="badge bg-light text-dark border px-2 py-1"><%= user.getUsername() %></span></td>
+                                                <td class="border-0 py-3 text-muted"><%= user.getEmail() %></td>
+                                                <td class="border-0 py-3 text-muted"><%= user.getPhone() %></td>
+                                                <td class="border-0 py-3 text-center">
+                                                    <span class="badge <%= user.isActive() ? "bg-success bg-opacity-10 text-success border border-success" : "bg-danger bg-opacity-10 text-danger border border-danger" %> px-3 py-2 rounded-pill">
                                                         <%= user.isActive() ? "Active" : "Inactive" %>
                                                     </span>
                                                 </td>
-                                                <td><%= user.getCreatedAt() %></td>
-                                                <td><%= user.getLastLogin() != null ? user.getLastLogin() : "Never" %></td>
-                                                <td>
-                                                    <div class="btn-group btn-group-sm">
-                                                        <a href="users?action=view&userId=<%= user.getId() %>" class="btn btn-outline-info" title="View">
+                                                <td class="border-0 py-3 text-muted small"><%= user.getCreatedAt() %></td>
+                                                <td class="border-0 py-3 text-muted small"><%= user.getLastLogin() != null ? user.getLastLogin() : "Never" %></td>
+                                                <td class="border-0 py-3 rounded-end text-center pe-3">
+                                                    <div class="d-flex justify-content-center gap-1">
+                                                        <a href="users?action=view&userId=<%= user.getId() %>" class="btn btn-sm btn-light text-info rounded-circle shadow-sm hover-scale-slight" title="View" style="width:32px;height:32px;padding:4px;">
                                                             <i class="fas fa-eye"></i>
                                                         </a>
-                                                        <a href="users?action=edit&userId=<%= user.getId() %>" class="btn btn-outline-warning" title="Edit">
+                                                        <a href="users?action=edit&userId=<%= user.getId() %>" class="btn btn-sm btn-light text-warning rounded-circle shadow-sm hover-scale-slight" title="Edit" style="width:32px;height:32px;padding:4px;">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <a href="users?action=transactions&userId=<%= user.getId() %>" class="btn btn-outline-primary" title="Transactions">
+                                                        <a href="users?action=transactions&userId=<%= user.getId() %>" class="btn btn-sm btn-light text-primary rounded-circle shadow-sm hover-scale-slight" title="Transactions" style="width:32px;height:32px;padding:4px;">
                                                             <i class="fas fa-exchange-alt"></i>
                                                         </a>
-                                                        <a href="users?action=export&userId=<%= user.getId() %>" class="btn btn-outline-success" title="Export PDF">
+                                                        <a href="users?action=export&userId=<%= user.getId() %>" class="btn btn-sm btn-light text-success rounded-circle shadow-sm hover-scale-slight" title="Export PDF" style="width:32px;height:32px;padding:4px;">
                                                             <i class="fas fa-download"></i>
                                                         </a>
 
@@ -189,8 +201,8 @@
                                                                 <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                                                 <input type="hidden" name="action" value="deactivate">
                                                                 <input type="hidden" name="userId" value="<%= user.getId() %>">
-                                                                <button type="submit" class="btn btn-outline-warning btn-sm" title="Deactivate"
-                                                                    onclick="return confirm('Are you sure you want to deactivate this user?')">
+                                                                <button type="submit" class="btn btn-sm btn-light text-warning rounded-circle shadow-sm hover-scale-slight" title="Deactivate"
+                                                                    onclick="return confirm('Are you sure you want to deactivate this user?')" style="width:32px;height:32px;padding:4px;">
                                                                     <i class="fas fa-user-times"></i>
                                                                 </button>
                                                             </form>
@@ -199,7 +211,7 @@
                                                                 <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                                                 <input type="hidden" name="action" value="activate">
                                                                 <input type="hidden" name="userId" value="<%= user.getId() %>">
-                                                                <button type="submit" class="btn btn-outline-success btn-sm" title="Activate">
+                                                                <button type="submit" class="btn btn-sm btn-light text-success rounded-circle shadow-sm hover-scale-slight" title="Activate" style="width:32px;height:32px;padding:4px;">
                                                                     <i class="fas fa-user-check"></i>
                                                                 </button>
                                                             </form>
@@ -209,8 +221,8 @@
                                                             <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                                                             <input type="hidden" name="action" value="delete">
                                                             <input type="hidden" name="userId" value="<%= user.getId() %>">
-                                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Delete"
-                                                                onclick="return confirm('Are you sure you want to delete this user?')">
+                                                            <button type="submit" class="btn btn-sm btn-light text-danger rounded-circle shadow-sm hover-scale-slight" title="Delete"
+                                                                onclick="return confirm('Are you sure you want to delete this user?')" style="width:32px;height:32px;padding:4px;">
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
