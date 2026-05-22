@@ -138,9 +138,26 @@
     // Notifications Logic
     window.addEventListener('DOMContentLoaded', () => {
         fetchNotifications();
-        // Optional: refresh every 60 seconds
-        setInterval(fetchNotifications, 60000);
+        // refresh every 15 seconds for snappier updates
+        setInterval(fetchNotifications, 15000);
     });
+
+    function timeAgo(dateString) {
+        if (!dateString) return "Just now";
+        const date = new Date(dateString);
+        const seconds = Math.floor((new Date() - date) / 1000);
+        let interval = seconds / 31536000;
+        if (interval > 1) return Math.floor(interval) + " years ago";
+        interval = seconds / 2592000;
+        if (interval > 1) return Math.floor(interval) + " months ago";
+        interval = seconds / 86400;
+        if (interval > 1) return Math.floor(interval) + " days ago";
+        interval = seconds / 3600;
+        if (interval > 1) return Math.floor(interval) + " hours ago";
+        interval = seconds / 60;
+        if (interval > 1) return Math.floor(interval) + " mins ago";
+        return "Just now";
+    }
 
     function fetchNotifications() {
         fetch('<%= request.getContextPath() %>/api/notifications')
@@ -178,17 +195,17 @@
                     if (n.type === 'ERROR') iconClass = 'bi-x-circle text-danger bg-danger bg-opacity-10';
 
                     list.innerHTML += `
-                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 border-bottom transition-all hover-bg-light" onclick="markNotificationRead(${n.id})">
+                        <a href="javascript:void(0)" class="list-group-item list-group-item-action p-3 border-bottom transition-all hover-bg-light" onclick="markNotificationRead(\${n.id})">
                             <div class="d-flex w-100">
                                 <div class="rounded-circle p-2 d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px;">
-                                    <i class="bi ${iconClass} fs-5"></i>
+                                    <i class="bi \${iconClass} fs-5"></i>
                                 </div>
                                 <div class="flex-grow-1">
                                     <div class="d-flex w-100 justify-content-between align-items-center mb-1">
-                                        <h6 class="mb-0 fw-bold text-dark text-truncate" style="max-width:180px;">${n.title}</h6>
-                                        <small class="text-muted" style="font-size:0.7rem;">Just now</small>
+                                        <h6 class="mb-0 fw-bold text-dark text-truncate" style="max-width:180px;">\${n.title || 'Alert'}</h6>
+                                        <small class="text-muted" style="font-size:0.7rem;">\${timeAgo(n.created_at)}</small>
                                     </div>
-                                    <p class="mb-0 text-secondary small lh-sm">${n.message}</p>
+                                    <p class="mb-0 text-secondary small lh-sm">\${n.message || 'No details available.'}</p>
                                 </div>
                             </div>
                         </a>
