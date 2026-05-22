@@ -40,7 +40,8 @@ public class AdminLoansServlet extends HttpServlet {
 			req.setAttribute("loans", loans);
 			req.getRequestDispatcher("/admin/loans.jsp").forward(req, resp);
 		} catch (SQLException e) {
-			resp.sendError(500, "Failed to load loans");
+			e.printStackTrace();
+			resp.sendError(500, "Failed to load loans: " + e.getMessage());
 		}
 	}
 
@@ -95,7 +96,8 @@ public class AdminLoansServlet extends HttpServlet {
 				con.commit();
 			}
 		} catch (SQLException e) {
-			resp.sendError(500, "Failed to update loan");
+			e.printStackTrace();
+			resp.sendError(500, "Failed to update loan: " + e.getMessage());
 			return;
 		}
 		resp.sendRedirect("/BankingWebApp/admin/loans");

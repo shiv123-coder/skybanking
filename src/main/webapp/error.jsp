@@ -12,11 +12,26 @@
         
         <div class="bg-light border shadow-sm rounded-4 p-4 text-start mb-4 overflow-auto" style="max-height: 250px;">
             <h6 class="text-danger fw-bold"><i class="bi bi-bug me-2"></i>Error Details:</h6>
-            <p class="text-dark font-monospace small mb-3 border-bottom pb-2"><%= exception != null ? exception.getMessage() : "Unknown error" %></p>
+            <% 
+                String errMsg = "Unknown error";
+                if (exception != null && exception.getMessage() != null) {
+                    errMsg = exception.getMessage();
+                } else if (request.getAttribute("jakarta.servlet.error.message") != null) {
+                    errMsg = (String) request.getAttribute("jakarta.servlet.error.message");
+                }
+            %>
+            <p class="text-dark font-monospace small mb-3 border-bottom pb-2"><%= errMsg %></p>
             <h6 class="text-secondary fw-bold mt-3">Stack Trace:</h6>
             <pre class="text-muted font-monospace small m-0 shadow-inner p-3 bg-white rounded border border-light" style="white-space: pre-wrap; word-wrap: break-word;"><% 
                 if(exception != null) {
                     exception.printStackTrace(new java.io.PrintWriter(out));
+                } else {
+                    Throwable t = (Throwable) request.getAttribute("jakarta.servlet.error.exception");
+                    if (t != null) {
+                        t.printStackTrace(new java.io.PrintWriter(out));
+                    } else {
+                        out.println("No stack trace available.");
+                    }
                 }
             %></pre>
         </div>
