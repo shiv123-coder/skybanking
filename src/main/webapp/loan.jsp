@@ -24,7 +24,7 @@
 
                 <jsp:include page="WEB-INF/components/alerts.jsp" />
 
-                <form action="loan/apply" method="post">
+                <form action="<%= request.getContextPath() %>/loan/apply" method="post">
                     <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
@@ -59,7 +59,7 @@
                         <button type="submit" class="btn btn-primary btn-lg px-5 py-3 fw-bold shadow-sm w-100 w-md-auto d-flex justify-content-center align-items-center">
                             Submit Application <i class="bi bi-check2-circle ms-2"></i>
                         </button>
-                        <a href="loan/status" class="btn btn-outline-primary btn-lg px-4 py-3 fw-bold w-100 w-md-auto bg-white">View Status</a>
+                        <a href="<%= request.getContextPath() %>/loan/status" class="btn btn-outline-primary btn-lg px-4 py-3 fw-bold w-100 w-md-auto bg-white">View Status</a>
                     </div>
                 </form>
             </div>

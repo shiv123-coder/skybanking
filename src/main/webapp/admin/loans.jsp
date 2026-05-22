@@ -55,7 +55,7 @@
                     <button type="button" class="btn btn-success btn-sm" onclick="openReasonModal(<%= l.get("loan_id") %>, 'approve')">Approve</button>
                     <button type="button" class="btn btn-warning btn-sm" onclick="openReasonModal(<%= l.get("loan_id") %>, 'reject')">Reject</button>
                 <% } else if ("APPROVED".equals(l.get("status"))) { %>
-                    <form action="loans" method="post" class="d-inline">
+                    <form action="<%= request.getContextPath() %>/admin/loans" method="post" class="d-inline">
                         <input type="hidden" name="csrf_token" value="<%= request.getAttribute("csrf_token") != null ? request.getAttribute("csrf_token") : "" %>">
                         <input type="hidden" name="loan_id" value="<%= l.get("loan_id") %>">
                         <button name="action" value="disburse" class="btn btn-primary btn-sm">Disburse</button>
@@ -74,7 +74,7 @@
     <div class="modal fade" id="reasonModal" tabindex="-1" aria-labelledby="reasonModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form id="reasonForm" action="loans" method="post">
+                <form id="reasonForm" action="<%= request.getContextPath() %>/admin/loans" method="post">
                     <div class="modal-header">
                         <h5 class="modal-title" id="reasonModalLabel">Provide Reason</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

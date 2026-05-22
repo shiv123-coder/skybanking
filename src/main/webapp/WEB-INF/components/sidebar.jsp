@@ -11,29 +11,7 @@
             <span class="fs-4 fw-bold gradient-text">SkyBank</span>
         </a>
         
-        <!-- Global Toggles -->
-        <div class="d-flex gap-2 align-items-center">
-            <!-- Notifications Toggle -->
-            <button class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel position-relative d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" data-bs-toggle="offcanvas" data-bs-target="#notificationsOffcanvas" title="Notifications">
-                <i class="bi bi-bell fs-5 text-dark"></i>
-                <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
-                    0
-                </span>
-            </button>
-            
-            <!-- Preloader Toggle -->
-            <button id="preloader-toggle" class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Toggle Preloader Animation">
-                <i class="bi bi-lightning-charge fs-5 text-success" id="preloader-icon"></i>
-            </button>
-            
-            <!-- Theme Toggle -->
-            <button id="theme-toggle" class="btn btn-link p-0 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center shadow-sm" style="width: 42px; height: 42px; background: var(--glass-bg);" title="Switch to Dark/Light Mode">
-                <div class="theme-icon-wrapper position-relative" style="width: 20px; height: 20px;">
-                    <i class="bi bi-sun-fill position-absolute start-50 top-50 translate-middle fs-5 text-warning theme-sun" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(-90deg) scale(0);"></i>
-                    <i class="bi bi-moon-stars-fill position-absolute start-50 top-50 translate-middle fs-5 text-primary theme-moon" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(90deg) scale(0);"></i>
-                </div>
-            </button>
-        </div>
+
     </div>
     <hr class="text-muted opacity-25">
     <ul class="nav nav-pills flex-column mb-auto gap-1">
@@ -85,6 +63,29 @@
     </ul>
     
     <div class="mt-auto pt-3">
+        <!-- Global Toggles -->
+        <div class="d-flex gap-2 justify-content-center mb-3">
+            <!-- Notifications Toggle -->
+            <button class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel position-relative d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" data-bs-toggle="offcanvas" data-bs-target="#notificationsOffcanvas" title="Notifications">
+                <i class="bi bi-bell fs-5 text-dark"></i>
+                <span id="notif-badge" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" style="font-size: 0.6rem;">
+                    0
+                </span>
+            </button>
+            
+            <!-- Preloader Toggle -->
+            <button id="preloader-toggle" class="btn btn-link p-2 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;" title="Toggle Preloader Animation">
+                <i class="bi bi-lightning-charge fs-5 text-success" id="preloader-icon"></i>
+            </button>
+            
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="btn btn-link p-0 text-decoration-none border-0 transition-all rounded-circle glass-panel d-flex align-items-center justify-content-center shadow-sm" style="width: 42px; height: 42px; background: var(--glass-bg);" title="Switch to Dark/Light Mode">
+                <div class="theme-icon-wrapper position-relative" style="width: 20px; height: 20px;">
+                    <i class="bi bi-sun-fill position-absolute start-50 top-50 translate-middle fs-5 text-warning theme-sun" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(-90deg) scale(0);"></i>
+                    <i class="bi bi-moon-stars-fill position-absolute start-50 top-50 translate-middle fs-5 text-primary theme-moon" style="transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); opacity: 0; transform: translate(-50%, -50%) rotate(90deg) scale(0);"></i>
+                </div>
+            </button>
+        </div>
         <div class="glass-panel p-3 rounded-4 d-flex align-items-center justify-content-between">
             <a href="<%= request.getContextPath() %>/userinfo" class="d-flex align-items-center text-decoration-none profile-link flex-grow-1">
                 <div class="rounded-circle bg-gradient-primary text-white d-flex align-items-center justify-content-center me-3 shadow-sm fw-bold fs-5" style="width: 40px; height: 40px; border: 2px solid white;">

@@ -62,6 +62,11 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="loans">
+                                <i class="fas fa-university"></i> Loans
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="logs">
                                 <i class="fas fa-list-alt"></i> Logs
                             </a>
