@@ -96,31 +96,8 @@
 <% } %>
 
 <script>
-    // Theme Toggle Logic
+    // Preloader Toggle Logic
     window.addEventListener('DOMContentLoaded', () => {
-        const themeToggle = document.getElementById('theme-toggle');
-        const sunIcon = document.querySelector('.theme-sun');
-        const moonIcon = document.querySelector('.theme-moon');
-        
-        function updateIcon(theme) {
-            if (theme === 'dark') {
-                sunIcon.style.opacity = '1';
-                sunIcon.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
-                moonIcon.style.opacity = '0';
-                moonIcon.style.transform = 'translate(-50%, -50%) rotate(90deg) scale(0)';
-            } else {
-                sunIcon.style.opacity = '0';
-                sunIcon.style.transform = 'translate(-50%, -50%) rotate(-90deg) scale(0)';
-                moonIcon.style.opacity = '1';
-                moonIcon.style.transform = 'translate(-50%, -50%) rotate(0deg) scale(1)';
-            }
-        }
-
-        // Initialize icon state
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        updateIcon(currentTheme);
-
-        // Preloader Toggle Logic
         const preloaderToggle = document.getElementById('preloader-toggle');
         const preloaderIcon = document.getElementById('preloader-icon');
 
@@ -149,21 +126,6 @@
             // Show alert for feedback
             const status = newDisabled ? 'disabled' : 'enabled';
             alert(`Preloader has been ${status}. It will take effect on next refresh.`);
-        });
-
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateIcon(newTheme);
-            
-            // Add a brief pulse animation to the button
-            themeToggle.style.transform = 'scale(0.85)';
-            setTimeout(() => {
-                themeToggle.style.transform = 'scale(1)';
-            }, 150);
         });
     });
 </script>

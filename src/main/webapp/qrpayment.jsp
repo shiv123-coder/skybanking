@@ -31,7 +31,7 @@
                             <p class="text-muted small mb-4">Show this to anyone to receive payments directly to your account.</p>
                             
                             <div class="bg-white p-3 rounded-4 shadow-sm d-inline-block border">
-                                <img src="data:image/png;base64,<%= request.getAttribute("staticQrCode") %>" alt="Static QR" class="img-fluid" style="width: 200px; height: 200px;">
+                                <img src="data:image/svg+xml;base64,<%= request.getAttribute("staticQrCode") %>" alt="Static QR" class="img-fluid" style="width: 200px; height: 200px;">
                             </div>
                             
                             <h4 class="mt-4 fw-bold text-dark"><%= session.getAttribute("fullname") %></h4>
@@ -52,7 +52,7 @@
                                 <p class="text-success small fw-bold mb-3"><i class="bi bi-check-circle-fill me-1"></i>QR Code for ₹<%= request.getAttribute("dynamicAmount") %> generated!</p>
                                 <div class="bg-white p-3 rounded-4 shadow-sm d-inline-block border position-relative">
                                     <div class="position-absolute top-0 start-50 translate-middle badge rounded-pill bg-danger" style="margin-top:-5px;">Expires in 15m</div>
-                                    <img src="data:image/png;base64,<%= request.getAttribute("dynamicQrCode") %>" alt="Dynamic QR" class="img-fluid" style="width: 180px; height: 180px;">
+                                    <img src="data:image/svg+xml;base64,<%= request.getAttribute("dynamicQrCode") %>" alt="Dynamic QR" class="img-fluid" style="width: 180px; height: 180px;">
                                 </div>
                                 <h3 class="mt-3 fw-bold text-dark">₹<%= request.getAttribute("dynamicAmount") %></h3>
                                 <a href="qr" class="btn btn-sm btn-outline-secondary mt-3 rounded-pill px-4">Generate Another</a>

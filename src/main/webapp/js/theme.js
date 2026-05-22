@@ -46,6 +46,9 @@
             }
         }
 
+        // Initialize icons
+        setTheme(document.documentElement.getAttribute('data-theme') || 'light');
+
         // Toggle action on click
         toggleBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
@@ -66,6 +69,12 @@
                 const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
                 setTheme(newTheme);
+                
+                // Add a brief pulse animation to the button
+                sidebarToggle.style.transform = 'scale(0.85)';
+                setTimeout(() => {
+                    sidebarToggle.style.transform = 'scale(1)';
+                }, 150);
             });
         }
     });

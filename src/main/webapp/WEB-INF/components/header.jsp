@@ -50,4 +50,4 @@
     </script>
 </head>
 <body>
-    <jsp:include page="preloader.jsp" />
+    <jsp:include page="/WEB-INF/components/preloader.jsp" />

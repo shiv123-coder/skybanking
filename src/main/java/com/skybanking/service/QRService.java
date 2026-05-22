@@ -2,13 +2,11 @@ package com.skybanking.service;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.EncodeHintType;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.ByteArrayOutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
@@ -27,21 +25,36 @@ public class QRService {
     private static final String HMAC_SECRET = System.getenv("APP_SECRET_KEY") != null ? 
             System.getenv("APP_SECRET_KEY") : "default_secure_hmac_key_1234567890";
 
-    /**
-     * Generates a QR code image as a Base64-encoded PNG string.
-     */
     public static String generateQRCodeImageBase64(String text, int width, int height) throws Exception {
         Map<EncodeHintType, Object> hints = new HashMap<>();
         hints.put(EncodeHintType.CHARACTER_SET, "UTF-8");
         hints.put(EncodeHintType.MARGIN, 1); // Remove white border
 
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
-        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height, hints);
+        // Generate with 0,0 to get the minimal unscaled matrix (1 pixel per module)
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, 0, 0, hints);
 
-        ByteArrayOutputStream pngOutputStream = new ByteArrayOutputStream();
-        MatrixToImageWriter.writeToStream(bitMatrix, "PNG", pngOutputStream);
-        byte[] pngData = pngOutputStream.toByteArray();
-        return Base64.getEncoder().encodeToString(pngData);
+        int matrixWidth = bitMatrix.getWidth();
+        int matrixHeight = bitMatrix.getHeight();
+
+        StringBuilder svg = new StringBuilder();
+        svg.append("<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"").append(width)
+           .append("\" height=\"").append(height).append("\" viewBox=\"0 0 ")
+           .append(matrixWidth).append(" ").append(matrixHeight)
+           .append("\">\n");
+        svg.append("<rect width=\"100%\" height=\"100%\" fill=\"#ffffff\"/>\n");
+        svg.append("<path d=\"");
+        
+        for (int y = 0; y < matrixHeight; y++) {
+            for (int x = 0; x < matrixWidth; x++) {
+                if (bitMatrix.get(x, y)) {
+                    svg.append("M").append(x).append(",").append(y).append("h1v1h-1z ");
+                }
+            }
+        }
+        svg.append("\" fill=\"#000000\"/>\n</svg>");
+
+        return Base64.getEncoder().encodeToString(svg.toString().getBytes(StandardCharsets.UTF_8));
     }
 
     /**
