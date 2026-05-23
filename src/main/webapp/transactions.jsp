@@ -108,6 +108,32 @@
                     </tbody>
                 </table>
             </div>
+            
+            <!-- Pagination Controls -->
+            <% 
+                Integer currentPage = (Integer) request.getAttribute("currentPage");
+                Boolean hasNextPage = (Boolean) request.getAttribute("hasNextPage");
+                if (currentPage != null) { 
+            %>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">
+                    Page <%= currentPage %>
+                </div>
+                <div class="btn-group shadow-sm">
+                    <% if (currentPage > 1) { %>
+                        <a href="transactions?page=<%= currentPage - 1 %>" class="btn btn-outline-secondary bg-white"><i class="bi bi-chevron-left"></i> Previous</a>
+                    <% } else { %>
+                        <button class="btn btn-outline-secondary bg-light text-muted" disabled><i class="bi bi-chevron-left"></i> Previous</button>
+                    <% } %>
+                    
+                    <% if (hasNextPage != null && hasNextPage) { %>
+                        <a href="transactions?page=<%= currentPage + 1 %>" class="btn btn-outline-secondary bg-white">Next <i class="bi bi-chevron-right"></i></a>
+                    <% } else { %>
+                        <button class="btn btn-outline-secondary bg-light text-muted" disabled>Next <i class="bi bi-chevron-right"></i></button>
+                    <% } %>
+                </div>
+            </div>
+            <% } %>
         </div>
     </main>
 </div>

@@ -35,25 +35,32 @@ public class WithdrawServlet extends HttpServlet {
             return;
         }
 
-        try (Connection con = DBConnection.getConnection()) {
+        try {
             BigDecimal amount = new BigDecimal(amountStr);
-
-            con.setAutoCommit(false);
-            try {
-                int accountId = AccountService.getOrCreatePrimaryAccount(con, userId);
-                String idempotencyKey = "TXN-" + UUID.randomUUID().toString();
-                
-                LedgerService.withdraw(con, accountId, amount, "Cash withdrawal", idempotencyKey);
-                
-                con.commit();
-                resp.sendRedirect("dashboard?message=Withdrawal Successful");
-            } catch (Exception e) {
-                con.rollback();
-                resp.sendRedirect("withdraw.jsp?error=Withdrawal Failed: " + e.getMessage().replace("java.sql.SQLException: ", ""));
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                resp.sendRedirect("withdraw.jsp?error=Amount must be greater than zero");
+                return;
             }
 
-        } catch (Exception e) {
-            resp.sendRedirect("withdraw.jsp?error=Server Error. Try again.");
+            try (Connection con = DBConnection.getConnection()) {
+                con.setAutoCommit(false);
+                try {
+                    int accountId = AccountService.getOrCreatePrimaryAccount(con, userId);
+                    String idempotencyKey = "TXN-" + UUID.randomUUID().toString();
+                    
+                    LedgerService.withdraw(con, accountId, amount, "Cash withdrawal", idempotencyKey);
+                    
+                    con.commit();
+                    resp.sendRedirect("dashboard?message=Withdrawal Successful");
+                } catch (Exception e) {
+                    con.rollback();
+                    resp.sendRedirect("withdraw.jsp?error=Withdrawal Failed: " + e.getMessage().replace("java.sql.SQLException: ", ""));
+                }
+            } catch (Exception e) {
+                resp.sendRedirect("withdraw.jsp?error=Server Error. Try again.");
+            }
+        } catch (NumberFormatException e) {
+            resp.sendRedirect("withdraw.jsp?error=Invalid amount format");
         }
     }
 }

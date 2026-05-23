@@ -93,6 +93,8 @@ CREATE INDEX idx_txn_date ON transactions (txn_date);
 CREATE INDEX idx_txn_status ON transactions (status);
 CREATE INDEX idx_txn_reference_number ON transactions (reference_number);
 CREATE INDEX idx_txn_receiver_account ON transactions (receiver_account_id);
+CREATE INDEX idx_txn_date_acc ON transactions (account_id, txn_date DESC);
+CREATE INDEX idx_txn_date_recv ON transactions (receiver_account_id, txn_date DESC);
 
 CREATE TRIGGER update_transactions_modtime
 BEFORE UPDATE ON transactions

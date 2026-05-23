@@ -16,6 +16,7 @@ public class DashboardServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession(false);
 		if (session == null || session.getAttribute("user_id") == null) {
+			// This shouldn't be reached due to UserAuthFilter, but kept as fallback just in case
 			req.setAttribute("error", "Please log in to access the dashboard.");
 			req.getRequestDispatcher("login.jsp").forward(req, resp);
 			return;

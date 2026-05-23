@@ -23,6 +23,7 @@ public class TransferServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
+        // Session check handled primarily by UserAuthFilter, kept as safety fallback
         if (session == null || session.getAttribute("user_id") == null) {
             resp.sendRedirect("login.jsp");
             return;
@@ -41,9 +42,15 @@ public class TransferServlet extends HttpServlet {
             return;
         }
 
-        try (Connection con = DBConnection.getConnection()) {
+        try {
             BigDecimal amount = new BigDecimal(amountStr);
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                resp.sendRedirect("transfer.jsp?error=Amount must be greater than zero");
+                return;
+            }
             int receiverAccountId = Integer.parseInt(receiverAccountStr);
+            
+            try (Connection con = DBConnection.getConnection()) {
             
             // If paying via Dynamic QR, verify HMAC signature and timestamp
             if (tsStr != null && sigStr != null && !tsStr.isEmpty() && !sigStr.isEmpty()) {
@@ -67,6 +74,8 @@ public class TransferServlet extends HttpServlet {
                 con.rollback();
                 resp.sendRedirect("transfer.jsp?error=Transfer Failed: " + e.getMessage().replace("java.sql.SQLException: ", "").replace("java.lang.IllegalArgumentException: ", ""));
             }
+
+            } // end try-with-resources Connection
 
         } catch (NumberFormatException e) {
             resp.sendRedirect("transfer.jsp?error=Invalid amount or account number format");

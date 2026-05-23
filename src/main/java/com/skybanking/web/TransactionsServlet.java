@@ -15,6 +15,7 @@ public class TransactionsServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession(false);
+        // Session check handled primarily by UserAuthFilter, kept as safety fallback
         if (session == null || session.getAttribute("user_id") == null) {
             resp.sendRedirect("login.jsp");
             return;
@@ -22,6 +23,17 @@ public class TransactionsServlet extends HttpServlet {
 
         int userId = (Integer) session.getAttribute("user_id");
         List<Map<String, Object>> transactions = new ArrayList<>();
+        
+        int page = 1;
+        String pageStr = req.getParameter("page");
+        if (pageStr != null && !pageStr.isEmpty()) {
+            try {
+                page = Integer.parseInt(pageStr);
+                if (page < 1) page = 1;
+            } catch (NumberFormatException ignored) {}
+        }
+        int limit = 20;
+        int offset = (page - 1) * limit;
 
         try (Connection con = DBConnection.getConnection()) {
 
@@ -39,19 +51,29 @@ public class TransactionsServlet extends HttpServlet {
                 }
             }
 
-            // 2️⃣ Fetch last 20 transactions where user is sender OR receiver
+            // 2️⃣ Fetch transactions with pagination (limit + 1 to check if next page exists)
             String sql = "SELECT txn_id, account_id, txn_type, amount, receiver_account_id, txn_date " +
                          "FROM transactions WHERE account_id=? OR receiver_account_id=? " +
-                         "ORDER BY txn_date DESC LIMIT 20";
+                         "ORDER BY txn_date DESC LIMIT ? OFFSET ?";
 
+            boolean hasNextPage = false;
             try (PreparedStatement ps = con.prepareStatement(sql)) {
                 ps.setInt(1, accountId);
                 ps.setInt(2, accountId);
+                ps.setInt(3, limit + 1);
+                ps.setInt(4, offset);
 
                 try (ResultSet rs = ps.executeQuery()) {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-
+                    
+                    int count = 0;
                     while (rs.next()) {
+                        if (count == limit) {
+                            hasNextPage = true;
+                            break;
+                        }
+                        count++;
+                        
                         Map<String, Object> txn = new HashMap<>();
                         Timestamp ts = rs.getTimestamp("txn_date");
                         txn.put("timestamp", sdf.format(ts));
@@ -87,6 +109,8 @@ public class TransactionsServlet extends HttpServlet {
             }
 
             req.setAttribute("transactions", transactions);
+            req.setAttribute("currentPage", page);
+            req.setAttribute("hasNextPage", hasNextPage);
             req.getRequestDispatcher("transactions.jsp").forward(req, resp);
 
         } catch (Exception e) {

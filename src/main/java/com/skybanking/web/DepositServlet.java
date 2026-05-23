@@ -35,25 +35,32 @@ public class DepositServlet extends HttpServlet {
             return;
         }
 
-        try (Connection con = DBConnection.getConnection()) {
+        try {
             BigDecimal amount = new BigDecimal(amountStr);
-
-            con.setAutoCommit(false);
-            try {
-                int accountId = AccountService.getOrCreatePrimaryAccount(con, userId);
-                String idempotencyKey = "TXN-" + UUID.randomUUID().toString();
-                
-                LedgerService.deposit(con, accountId, amount, "Cash deposit", idempotencyKey);
-                
-                con.commit();
-                resp.sendRedirect("dashboard?message=Deposit Successful");
-            } catch (Exception e) {
-                con.rollback();
-                resp.sendRedirect("deposit.jsp?error=Deposit Failed: " + e.getMessage().replace("java.lang.Exception: ", "").replace("java.sql.SQLException: ", ""));
+            if (amount.compareTo(BigDecimal.ZERO) <= 0) {
+                resp.sendRedirect("deposit.jsp?error=Amount must be greater than zero");
+                return;
             }
 
-        } catch (Exception e) {
-            resp.sendRedirect("deposit.jsp?error=Server Error. Try again.");
+            try (Connection con = DBConnection.getConnection()) {
+                con.setAutoCommit(false);
+                try {
+                    int accountId = AccountService.getOrCreatePrimaryAccount(con, userId);
+                    String idempotencyKey = "TXN-" + UUID.randomUUID().toString();
+                    
+                    LedgerService.deposit(con, accountId, amount, "Cash deposit", idempotencyKey);
+                    
+                    con.commit();
+                    resp.sendRedirect("dashboard?message=Deposit Successful");
+                } catch (Exception e) {
+                    con.rollback();
+                    resp.sendRedirect("deposit.jsp?error=Deposit Failed: " + e.getMessage().replace("java.lang.Exception: ", "").replace("java.sql.SQLException: ", ""));
+                }
+            } catch (Exception e) {
+                resp.sendRedirect("deposit.jsp?error=Server Error. Try again.");
+            }
+        } catch (NumberFormatException e) {
+            resp.sendRedirect("deposit.jsp?error=Invalid amount format");
         }
     }
 }
