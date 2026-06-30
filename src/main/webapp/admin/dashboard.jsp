@@ -297,27 +297,34 @@
         <% if (stats != null) { %>
         <% Map<String, Object> transactionTrends = (Map<String, Object>) request.getAttribute("transactionTrends"); %>
         <% if (transactionTrends != null) { %>
+        <% List<Map<String, Object>> dailyCounts = (List<Map<String, Object>>) transactionTrends.get("dailyTransactionCounts"); %>
+        <% List<Map<String, Object>> typeDistribution = (List<Map<String, Object>>) transactionTrends.get("transactionTypesDistribution"); %>
+        var dailyLabels = [];
+        var dailyData = [];
+        <% if (dailyCounts != null) { %>
+            <% for (int i = 0; i < dailyCounts.size(); i++) { %>
+                dailyLabels.push('<%= dailyCounts.get(i).get("date") %>');
+                dailyData.push(<%= dailyCounts.get(i).get("count") %>);
+            <% } %>
+        <% } %>
+
+        var typeLabels = [];
+        var typeData = [];
+        <% if (typeDistribution != null) { %>
+            <% for (int i = 0; i < typeDistribution.size(); i++) { %>
+                typeLabels.push('<%= typeDistribution.get(i).get("type") %>');
+                typeData.push(<%= typeDistribution.get(i).get("count") %>);
+            <% } %>
+        <% } %>
+
         var ctx = document.getElementById("transactionChart").getContext('2d');
         var transactionChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: [
-                    <% List<Map<String, Object>> dailyCounts = (List<Map<String, Object>>) transactionTrends.get("dailyTransactionCounts"); %>
-                    <% if (dailyCounts != null) { %>
-                        <% for (int i = 0; i < dailyCounts.size(); i++) { %>
-                            '<%= dailyCounts.get(i).get("date") %>'<%= i < dailyCounts.size() - 1 ? "," : "" %>
-                        <% } %>
-                    <% } %>
-                ],
+                labels: dailyLabels,
                 datasets: [{
                     label: 'Transactions',
-                    data: [
-                        <% if (dailyCounts != null) { %>
-                            <% for (int i = 0; i < dailyCounts.size(); i++) { %>
-                                <%= dailyCounts.get(i).get("count") %><%= i < dailyCounts.size() - 1 ? "," : "" %>
-                            <% } %>
-                        <% } %>
-                    ],
+                    data: dailyData,
                     borderColor: 'rgb(75, 192, 192)',
                     tension: 0.1
                 }]
@@ -337,22 +344,9 @@
         var transactionTypesChart = new Chart(ctx2, {
             type: 'doughnut',
             data: {
-                labels: [
-                    <% List<Map<String, Object>> typeDistribution = (List<Map<String, Object>>) transactionTrends.get("transactionTypesDistribution"); %>
-                    <% if (typeDistribution != null) { %>
-                        <% for (int i = 0; i < typeDistribution.size(); i++) { %>
-                            '<%= typeDistribution.get(i).get("type") %>'<%= i < typeDistribution.size() - 1 ? "," : "" %>
-                        <% } %>
-                    <% } %>
-                ],
+                labels: typeLabels,
                 datasets: [{
-                    data: [
-                        <% if (typeDistribution != null) { %>
-                            <% for (int i = 0; i < typeDistribution.size(); i++) { %>
-                                <%= typeDistribution.get(i).get("count") %><%= i < typeDistribution.size() - 1 ? "," : "" %>
-                            <% } %>
-                        <% } %>
-                    ],
+                    data: typeData,
                     backgroundColor: [
                         '#FF6384',
                         '#36A2EB',
